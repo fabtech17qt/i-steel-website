@@ -4,6 +4,7 @@ import { StatsStrip } from '@/components/sections/StatsStrip'
 import { AboutSnapshot } from '@/components/sections/AboutSnapshot'
 import { ServicesGrid } from '@/components/sections/ServicesGrid'
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
+import { VideoSection } from '@/components/sections/VideoSection'
 import { CertificationsStrip } from '@/components/sections/CertificationsStrip'
 import { ProcessSection } from '@/components/sections/ProcessSection'
 import { CTABanner } from '@/components/sections/CTABanner'
@@ -23,6 +24,7 @@ export default function HomePage() {
       <AboutSnapshot />
       <ServicesGrid />
       <FeaturedProjects />
+      <VideoSection />
       <CertificationsStrip />
       <ProcessSection />
       <CTABanner />
