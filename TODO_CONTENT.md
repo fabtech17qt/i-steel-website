@@ -10,14 +10,14 @@ Review every item below with the client before launch. Each `[CONTENT NEEDED]` b
 - [ ] **Office address** — The footer and Contact page show only "Doha, Qatar". Supply full street address for footer + Google Maps embed URL (`lib/content/company.ts → address`).
 - [ ] **Email address** — Verify `info@i-steelgroup.com` is monitored. Update `lib/content/company.ts`.
 - [ ] **Contact form backend** — Wire up `app/api/contact/route.ts` with Resend API key. Set `RESEND_API_KEY` environment variable on Vercel.
-- [ ] **Stats (homepage + about)** — Real numbers for: projects delivered, team members, annual tonnes fabricated. Update `lib/content/company.ts → stats`.
+- [x] **Stats (homepage + about)** — Real numbers set: 5+ years experience, 52+ projects delivered, 45+ skilled workers, 3000+ tonnes fabricated annually. `lib/content/company.ts → stats`.
 
 ---
 
 ## High priority
 
 - [ ] **Project case studies** — Currently 6 placeholder projects. Supply for each: name, client (with permission), sector, year, location, scope, description, and 2–4 photos. Update `lib/content/projects.ts`.
-- [ ] **Certification badges** — Supply SVG logos for ISO 9001, ISO 14001, ISO 45001, QCD. Place in `/public/assets/logos/`. Update `lib/content/certifications.ts`.
+- [ ] **Certification badges** — Supply SVG logos for ISO 9001, ISO 14001, ISO 45001, ICV. Place in `/public/assets/logos/`. Update `lib/content/certifications.ts`.
 - [ ] **Client appreciation letters** — Scan / photograph all letters. Add to `lib/content/certifications.ts` with client name, year, project.
 - [ ] **Hero video (Envato)** — Source a cinematic B-roll of structural steel construction at golden hour. Max 3MB / 20s / muted. Place at `/public/assets/envato/hero-steel-construction.mp4`. Uncomment the `<video>` tag in `components/sections/Hero.tsx`.
 - [ ] **Service photos** — Real photos (from WhatsApp/site) for each of the 12 services. Place at paths listed in `lib/content/services.ts → image`.

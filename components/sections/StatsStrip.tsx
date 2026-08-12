@@ -7,7 +7,7 @@ export function StatsStrip() {
   const stats = [
     { value: company.stats.yearsExperience, label: 'Years of experience' },
     { value: company.stats.projectsDelivered, label: 'Projects delivered' },
-    { value: company.stats.teamMembers, label: 'Skilled team members' },
+    { value: company.stats.skilledWorkers, label: 'Skilled workers' },
     { value: company.stats.tonnesFabricated, label: 'Tonnes fabricated annually' },
   ]
 

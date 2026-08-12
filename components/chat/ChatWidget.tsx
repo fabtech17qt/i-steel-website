@@ -27,15 +27,15 @@ const QA = [
   },
   {
     keys: ['location', 'address', 'where are you', 'doha', 'office', 'headquarter'],
-    ans: "iSteel Engineering is headquartered in Doha, Qatar. We deliver projects across the entire country — from Lusail and The Pearl to Mesaieed Industrial City and beyond.",
+    ans: "iSteel Engineering is headquartered at New Industrial Area, Doha, Qatar (P.O. Box 30663). Our factory and offices are based here. We deliver projects across the entire country — from Lusail to Ras Laffan Industrial City and Mesaieed.",
   },
   {
-    keys: ['certif', 'iso', 'accredit', 'standard', 'qcd', 'compliance'],
-    ans: "iSteel holds three ISO certifications:\n\n• ISO 9001:2015 — Quality Management\n• ISO 14001:2015 — Environmental Management\n• ISO 45001:2018 — Occupational Health & Safety\n\nWe are also QCD registered for Qatar's chemical and petroleum sector.",
+    keys: ['certif', 'iso', 'accredit', 'standard', 'icv', 'compliance'],
+    ans: "iSteel holds multiple certifications:\n\n• ISO 9001:2015 — Quality Management\n• ISO 14001:2016 — Environmental Management\n• ISO 45001:2018 — Occupational Health & Safety\n• ICV Certified — In-Country Value (Qatar)\n• NCAGE Registered — Qatar National Codification Bureau\n• Safety Excellence Award — 2M+ LTI-Free Safe Work Hours (2025)",
   },
   {
     keys: ['experience', 'year', 'founded', 'established', 'since', 'how long', 'history'],
-    ans: "Founded in 2013, iSteel Engineering has over 12 years of experience delivering structural steel and civil projects in Qatar. We have completed hundreds of projects ranging from 50-tonne fabrication packages to 4,000 m² turnkey industrial facilities.",
+    ans: "Founded in 2021, iSteel Engineering has 5+ years of experience delivering structural steel and civil projects in Qatar. We have completed 52+ projects — from the Al Waab City Mall complex to Qatar Foundation steel works, Nakilat Tower, and large-scale turnkey industrial facilities.",
   },
   {
     keys: ['contact', 'phone', 'email', 'call', 'reach', 'enquir', 'get in touch'],
@@ -47,7 +47,7 @@ const QA = [
   },
   {
     keys: ['oil', 'gas', 'petrochemical', 'qatarenergy', 'adnoc', 'upstream', 'midstream', 'mesaieed'],
-    ans: "iSteel is QCD registered with extensive experience in structural and civil works within oil & gas facilities. We understand the HSE requirements for brownfield operating assets and deliver safely in hazardous area environments.",
+    ans: "iSteel is ICV certified with extensive experience in structural and civil works within oil & gas facilities. We understand the HSE requirements for brownfield operating assets and deliver safely in hazardous area environments.",
   },
   {
     keys: ['warehouse', 'industrial', 'factory', 'pre-engineered', 'peb', 'portal frame', 'storage'],
@@ -71,7 +71,7 @@ const QA = [
   },
   {
     keys: ['project', 'portfolio', 'work', 'completed', 'past', 'gallery', 'case'],
-    ans: "You can browse our delivered projects on the Projects page — covering industrial, commercial, oil & gas, civil, and MEP sectors. Notable work includes long-span commercial truss structures, industrial warehouse complexes, and major petrochemical fabrication packages.",
+    ans: "You can browse our delivered projects on the Projects page. Notable work includes:\n\n• Al Waab City Mall — one of Qatar's most complex steel structures\n• Qatar Foundation Steel Works\n• Nakilat Tower (Commercial Tower, Doha)\n• Greenhouse Structure (20 days scope to handover)\n• Workshop at Ras Laffan (ongoing turnkey)\n• Al Khor Storage House\n• Global Armoring Factory\n\nClients include Amiri Diwan, Qatar Foundation, Ashghal, Tekfen, Domopan, and more.",
   },
   {
     keys: ['blast', 'paint', 'coat', 'surface', 'sa 2', 'sa2', 'epoxy', 'primer'],

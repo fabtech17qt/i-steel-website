@@ -8,11 +8,30 @@ import { Reveal } from '@/components/motion/Reveal'
 import { SteelIcon } from '@/components/ui/SteelIcon'
 
 const steps = [
-  { number: '01', title: 'Consult & Survey', description: 'We assess your requirements, site conditions, and project brief.', icon: '007-tools' },
-  { number: '02', title: 'Design & Detail (BIM)', description: 'Structural engineering and 3D Tekla modelling to buildable detail.', icon: '048-grid' },
-  { number: '03', title: 'Fabricate (Workshop)', description: 'Precision cutting, welding, and assembly in our Doha workshop.', icon: '019-factory' },
-  { number: '04', title: 'Coat & Finish', description: 'Shot blasting, painting, intumescent fire-rating to specification.', icon: '021-welder' },
-  { number: '05', title: 'Install & Handover', description: 'Safe erection, QA documentation, and full project handover.', icon: '011-beam' },
+  {
+    number: '01',
+    title: 'Design & Detailed Engineering',
+    description: 'AutoCAD, Tekla, STAAD Pro. BIM detailing that makes on-site surprises rare.',
+    icon: '048-grid',
+  },
+  {
+    number: '02',
+    title: 'Fabricate',
+    description: 'CNC & plasma cutting, MIG/TIG welding — precision to industry standard.',
+    icon: '019-factory',
+  },
+  {
+    number: '03',
+    title: 'Blast, Paint, Fireproof',
+    description: 'Surface prep and fire-rated finishing in-house before anything ships.',
+    icon: '021-welder',
+  },
+  {
+    number: '04',
+    title: 'Erect, Install & Hand Over',
+    description: 'Warehouses, high-rises, domes, industrial structures — installed and handed over.',
+    icon: '011-beam',
+  },
 ]
 
 export function ProcessSection() {
@@ -53,9 +72,13 @@ export function ProcessSection() {
       <Container className="relative z-10">
         <Reveal className="text-center mb-14">
           <Eyebrow className="mb-4">How we deliver</Eyebrow>
-          <h2 className="text-h1 font-heading text-white max-w-xl mx-auto">
-            Five steps from brief to handover
+          <h2 className="text-h1 font-heading text-white max-w-2xl mx-auto">
+            From Drawing to Final Bolt — one team
           </h2>
+          <p className="text-white/50 text-body max-w-2xl mx-auto mt-4">
+            Most steel jobs split Design, Fabrication and Erection across separate vendors — and the gaps between them cause the delays.
+            iSteel owns every stage, so accountability never changes hands.
+          </p>
         </Reveal>
 
         {/* Desktop: horizontal */}
@@ -66,7 +89,7 @@ export function ProcessSection() {
             style={{ scaleX, right: 0 }}
           />
 
-          <div className="grid grid-cols-5 gap-6">
+          <div className="grid grid-cols-4 gap-6">
             {steps.map((step, i) => (
               <Reveal key={step.number} delay={i * 0.08}>
                 <div className="flex flex-col items-center text-center group">

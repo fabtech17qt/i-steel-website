@@ -11,7 +11,7 @@ import { certifications } from '@/lib/content/certifications'
 export const metadata: Metadata = {
   title: 'Certifications & Accreditations | iSteel Engineering Qatar',
   description:
-    'ISO 9001, ISO 14001, ISO 45001 certified. QCD registered. View all iSteel Engineering certifications, quality accreditations, and client appreciation letters.',
+    'ISO 9001, ISO 14001, ISO 45001 certified. ICV certified. View all iSteel Engineering certifications, quality accreditations, and client appreciation letters.',
 }
 
 const isoCerts = certifications.filter((c) => c.type === 'certification')
@@ -21,7 +21,7 @@ const whyItMatters = [
   'Verified quality management at every production stage',
   'Environmentally responsible operations and waste management',
   'World-class occupational health and safety protocols',
-  'Compliance with Qatar Chemical & Petroleum sector requirements',
+  "Compliance with Qatar's In-Country Value (ICV) programme requirements",
 ]
 
 export default function CertificationsPage() {

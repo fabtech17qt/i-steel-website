@@ -40,13 +40,15 @@ export function CTABanner() {
         <div className="flex flex-col items-center text-center gap-8">
           <Reveal>
             <h2 className="text-display font-heading text-paper">
-              Let&rsquo;s build your vision together.
+              Let&rsquo;s Build A{' '}
+              <span className="text-gold-gradient">Stronger Future</span>{' '}
+              Together.
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="text-body text-paper/60 max-w-lg">
-              Ready to discuss your project? Our engineering team is available for site visits,
-              consultations, and quotations across Qatar.
+              We invite you to see the factory and the work for yourself.
+              Our engineering team is available for site visits, consultations, and quotations across Qatar.
             </p>
           </Reveal>
           <Reveal delay={0.18}>

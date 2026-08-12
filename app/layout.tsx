@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: '%s | iSteel Engineering',
   },
   description:
-    'Structural steel design, fabrication, and turnkey civil & MEP projects across Qatar. ISO certified. Serving industrial, commercial, and oil & gas sectors since 2013.',
+    'Qatar\'s integrated structural steel and turnkey construction specialist. 5+ years of service, 52+ projects delivered. ISO 9001, ISO 45001, ICV certified.',
   keywords: [
     'structural steel Qatar',
     'steel fabrication Doha',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     siteName: 'iSteel Engineering Trading & Contracting',
     title: 'iSteel Engineering Trading & Contracting W.L.L',
     description:
-      'Engineered steel. Delivered turnkey. Structural steel and civil construction in Qatar since 2013.',
+      'We build the bones of every building. Structural steel and turnkey construction in Qatar. 5+ years. 52+ projects.',
     images: [
       {
         url: '/assets/og-image.jpg',

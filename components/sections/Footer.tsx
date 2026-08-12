@@ -52,8 +52,8 @@ export function Footer() {
               </div>
             </div>
             <p className="text-mute text-sm leading-relaxed mb-6">
-              Engineered steel. Delivered turnkey.<br />
-              Serving Qatar since {company.established}.
+              We build the bones of every building.<br />
+              {company.stats.yearsExperience} years · {company.stats.projectsDelivered} projects delivered.
             </p>
 
             {/* Gold divider */}
@@ -128,7 +128,11 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3 text-sm text-mute">
                 <MapPin size={14} className="text-accent mt-0.5 shrink-0" />
-                <span>{company.address.line2}</span>
+                <span>
+                  {company.address.line1}<br />
+                  {company.address.line2}<br />
+                  {company.address.poBox}
+                </span>
               </li>
             </ul>
             <a

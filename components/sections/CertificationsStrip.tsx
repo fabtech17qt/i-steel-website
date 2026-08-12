@@ -9,7 +9,7 @@ const certs = [
   { name: 'ISO 9001:2015', sub: 'Quality Management', icon: '016-steel' },
   { name: 'ISO 14001:2015', sub: 'Environmental Management', icon: '019-factory' },
   { name: 'ISO 45001:2018', sub: 'Occupational H&S', icon: '007-tools' },
-  { name: 'QCD Registered', sub: 'Qatar Chemical & Petroleum', icon: '036-chain' },
+  { name: 'ICV Certified', sub: 'In-Country Value — Qatar', icon: '036-chain' },
 ]
 
 export function CertificationsStrip() {

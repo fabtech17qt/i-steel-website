@@ -92,12 +92,12 @@ export function Hero() {
 
           <h1 className="text-display font-heading text-paper mb-6">
             <SplitText
-              text="Engineered steel."
+              text="We build the bones"
               className="block"
               delay={0.3}
             />
             <SplitText
-              text="Delivered turnkey."
+              text="of every building."
               className="block text-gold-gradient"
               delay={0.45}
             />
@@ -109,8 +109,8 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            Structural steel design, fabrication, and turnkey civil + MEP for industrial,
-            commercial, and oil & gas projects across Qatar.
+            End-to-end Structural Steel and Turnkey Construction — Warehouses, Schools, Malls,
+            High-rises and Industrial Facilities. One accountable partner from drawing to final bolt.
           </motion.p>
 
           <motion.div
@@ -150,7 +150,7 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.0 }}
           >
-            {['ISO 9001 Certified', 'ISO 45001 H&S', 'QCD Registered', 'Est. 2013'].map((badge) => (
+            {['ISO 9001 Certified', 'ISO 14001 · ISO 45001', 'ICV Certified', '5+ Years of Service'].map((badge) => (
               <span key={badge} className="flex items-center gap-2 text-xs text-paper/60">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
                 {badge}

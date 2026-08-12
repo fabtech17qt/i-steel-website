@@ -13,7 +13,7 @@ import { ContactSection } from '@/components/sections/ContactSection'
 export const metadata: Metadata = {
   title: 'iSteel Engineering Trading & Contracting | Structural Steel Qatar',
   description:
-    'Qatar-based structural steel fabrication, civil construction, and turnkey MEP contracting since 2013. ISO certified.',
+    'Qatar\'s integrated structural steel and turnkey construction specialist. End-to-end from Design to Handover. 5+ years, 52+ projects. ISO certified, ICV certified.',
 }
 
 export default function HomePage() {
