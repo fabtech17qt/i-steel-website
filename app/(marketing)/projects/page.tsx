@@ -8,6 +8,7 @@ import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Reveal } from '@/components/motion/Reveal'
 import { CTABanner } from '@/components/sections/CTABanner'
+import { ClientsStrip } from '@/components/sections/ClientsStrip'
 import { SteelIcon } from '@/components/ui/SteelIcon'
 import { projects, type Sector } from '@/lib/content/projects'
 
@@ -131,6 +132,8 @@ export default function ProjectsPage() {
           )}
         </Container>
       </div>
+
+      <ClientsStrip />
 
       <CTABanner />
     </>

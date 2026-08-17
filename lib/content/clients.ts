@@ -1,0 +1,18 @@
+export const clients: string[] = [
+  'Domopan Qatar',
+  'Technical Supplies & Services Co. W.L.L.',
+  'Omega Engineering',
+  'GEC Trading & Contracting W.L.L.',
+  'NBJ Contracting W.L.L.',
+  'Agora Group',
+  'Volta Battery Recycling',
+  'Steadiness Trading & Contracting W.L.L.',
+  'BARQ Group',
+  'Metaltek Trading & Contracting W.L.L.',
+  'Servetech Trading & Contracting W.L.L.',
+  'MAN Enterprise Qatar W.L.L.',
+  'Walco Middle East',
+  'Alwajba Corporation',
+  'Traverse Trading & Contracting',
+  'Seashore Steel W.L.L.',
+]
