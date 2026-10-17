@@ -1,129 +1,173 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
-import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Reveal } from '@/components/motion/Reveal'
+import { SplitText } from '@/components/motion/SplitText'
 import { SteelIcon } from '@/components/ui/SteelIcon'
+import { cn } from '@/lib/utils'
+
+const EASE = [0.16, 1, 0.3, 1] as const
 
 const steps = [
   {
     number: '01',
-    title: 'Design & Detailed Engineering',
-    description: 'AutoCAD, Tekla, STAAD Pro. BIM detailing that makes on-site surprises rare.',
+    label: 'Stage 01',
+    title: 'Design & Engineering',
+    description:
+      'AutoCAD, Tekla and STAAD Pro. Detailed BIM modelling, connection design and shop drawings — so on-site surprises are rare.',
+    points: ['Structural analysis', 'Tekla BIM detailing', 'Shop & erection drawings'],
     icon: '048-grid',
+    image: '/assets/envato/Images/8.jpeg',
   },
   {
     number: '02',
-    title: 'Fabricate',
-    description: 'CNC & plasma cutting, MIG/TIG welding — precision to industry standard.',
+    label: 'Stage 02',
+    title: 'Fabrication',
+    description:
+      'CNC and plasma cutting, MIG/TIG and sub-arc welding in our Doha workshop — every member checked against ITPs before it leaves.',
+    points: ['CNC plasma cutting', 'Certified welders', 'NDT: UT · MT · PT'],
     icon: '019-factory',
+    image: '/assets/envato/New-img/WhatsApp Image 2026-05-26 at 2.15.36 PM.jpeg',
   },
   {
     number: '03',
-    title: 'Blast, Paint, Fireproof',
-    description: 'Surface prep and fire-rated finishing in-house before anything ships.',
+    label: 'Stage 03',
+    title: 'Blast, Paint & Fireproof',
+    description:
+      'Surface preparation, protective coatings and fire-rated finishes applied in-house — specified for Qatar’s climate.',
+    points: ['Sa 2.5 grit blasting', 'Multi-coat systems', 'Intumescent fireproofing'],
     icon: '021-welder',
+    image: '/assets/envato/New-img/WhatsApp Image 2026-05-26 at 2.15.37 PM.jpeg',
   },
   {
     number: '04',
-    title: 'Erect, Install & Hand Over',
-    description: 'Warehouses, high-rises, domes, industrial structures — installed and handed over.',
+    label: 'Stage 04',
+    title: 'Erection & Handover',
+    description:
+      'Our own crews and lifting plan install warehouses, high-rises, domes and industrial structures — then hand over, documented.',
+    points: ['Self-performed erection', 'Crane & lift planning', 'QA dossiers & handover'],
     icon: '011-beam',
+    image: '/assets/envato/Images/4.jpeg',
   },
 ]
 
 export function ProcessSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
-  const scaleX = useTransform(scrollYProgress, [0.1, 0.7], [0, 1])
+  const [active, setActive] = useState(0)
+  const step = steps[active]
 
   return (
-    <section ref={sectionRef} className="relative section-py overflow-hidden">
-      {/* Chrome texture background */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/assets/envato/Images/20.jpeg"
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          aria-hidden="true"
-        />
-      </div>
-      {/* Deep navy overlay */}
-      <div className="absolute inset-0 z-[1]"
-        style={{ background: 'linear-gradient(135deg, rgba(4,9,30,0.97) 0%, rgba(10,21,71,0.95) 100%)' }}
-      />
-      {/* Large steel bar icon watermark — left */}
-      <div className="absolute left-[-5%] top-1/2 -translate-y-1/2 z-[2] opacity-[0.04] pointer-events-none rotate-12">
-        <SteelIcon name="038-bars" size={400} color="white" />
-      </div>
-      {/* Large beam icon watermark — right */}
-      <div className="absolute right-[-8%] bottom-0 z-[2] opacity-[0.04] pointer-events-none -rotate-6">
-        <SteelIcon name="011-beam" size={380} color="white" />
+    <section className="frame relative bg-accent text-ink overflow-hidden grain">
+      {/* Huge watermark */}
+      <div
+        aria-hidden="true"
+        className="absolute -right-10 -top-10 font-heading font-extrabold text-[clamp(10rem,28vw,26rem)] leading-none text-ink/[0.06] select-none pointer-events-none"
+      >
+        04
       </div>
 
-      {/* Gold hairlines top + bottom */}
-      <div className="absolute top-0 left-0 right-0 h-px z-[3] bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-px z-[3] bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-
-      <Container className="relative z-10">
-        <Reveal className="text-center mb-14">
-          <Eyebrow className="mb-4">How we deliver</Eyebrow>
-          <h2 className="text-h1 font-heading text-white max-w-2xl mx-auto">
-            From Drawing to Final Bolt — one team
-          </h2>
-          <p className="text-white/50 text-body max-w-2xl mx-auto mt-4">
-            Most steel jobs split Design, Fabrication and Erection across separate vendors — and the gaps between them cause the delays.
-            iSteel owns every stage, so accountability never changes hands.
+      <Container className="relative py-[clamp(64px,8vw,120px)]">
+        <Reveal>
+          <p className="text-eyebrow !text-ink/70 mb-5">Predictable process. Proven results.</p>
+        </Reveal>
+        <h2 className="h-mix text-display max-w-4xl">
+          <SplitText text="Our" />{' '}
+          <SplitText text="4-stage" className="font-extrabold" delay={0.06} />{' '}
+          <SplitText text="delivery process" delay={0.12} />
+        </h2>
+        <Reveal delay={0.15}>
+          <p className="mt-6 max-w-2xl text-ink/75 text-[15px] leading-relaxed">
+            Behind every iSteel structure is the same system — <strong className="text-ink">one team from the first
+            drawing to the final bolt</strong>, with no hand-offs between vendors.
           </p>
         </Reveal>
 
-        {/* Desktop: horizontal */}
-        <div className="hidden lg:block relative">
-          <div className="absolute top-[44px] left-0 right-0 h-px bg-[#1B2F8A]/60" />
-          <motion.div
-            className="absolute top-[44px] left-0 h-px bg-accent origin-left"
-            style={{ scaleX, right: 0 }}
-          />
+        {/* Tabs */}
+        <div role="tablist" aria-label="Delivery stages" className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-x-6 border-b border-ink/15">
+          {steps.map((s, i) => (
+            <button
+              key={s.number}
+              role="tab"
+              aria-selected={i === active}
+              onClick={() => setActive(i)}
+              onMouseEnter={() => setActive(i)}
+              className="relative text-left py-5 group"
+            >
+              <span
+                className={cn(
+                  'block font-heading text-[clamp(1.25rem,2vw,1.75rem)] uppercase transition-all duration-300',
+                  i === active ? 'font-bold' : 'font-light text-ink/60 group-hover:text-ink'
+                )}
+              >
+                {s.label}
+              </span>
+              <span className={cn('block mt-1 text-xs sm:text-sm transition-colors', i === active ? 'text-ink italic' : 'text-ink/55')}>
+                {s.title}
+              </span>
+              {i === active && (
+                <motion.span
+                  layoutId="process-underline"
+                  className="absolute left-0 right-6 -bottom-px h-[3px] bg-ink rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
 
-          <div className="grid grid-cols-4 gap-6">
-            {steps.map((step, i) => (
-              <Reveal key={step.number} delay={i * 0.08}>
-                <div className="flex flex-col items-center text-center group">
-                  <div className="relative z-10 w-[88px] h-[88px] rounded-full border-2 border-[#1B2F8A]/80 bg-[#0A1547]/80 backdrop-blur-sm flex flex-col items-center justify-center mb-6 transition-all duration-300 group-hover:border-accent group-hover:shadow-[0_0_32px_rgba(212,160,32,0.3)]">
-                    <SteelIcon name={step.icon} size={32} color="gold" className="mb-1 opacity-80 group-hover:opacity-100 transition-opacity" />
-                    <span className="text-[9px] text-accent tracking-widest">{step.number}</span>
-                  </div>
-                  <h3 className="text-h3 font-heading text-white mb-2 group-hover:text-accent transition-colors duration-300">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{step.description}</p>
-                </div>
-              </Reveal>
-            ))}
+        {/* Panel */}
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-14 items-center min-h-[340px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step.number}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.5, ease: EASE }}
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <span className="w-14 h-14 rounded-2xl bg-ink flex items-center justify-center">
+                  <SteelIcon name={step.icon} size={28} color="gold" />
+                </span>
+                <span className="font-heading text-6xl font-extrabold text-ink/15 leading-none">{step.number}</span>
+              </div>
+              <h3 className="h-mix text-h2 !font-bold">{step.title}</h3>
+              <p className="mt-4 text-ink/80 leading-relaxed max-w-md">{step.description}</p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {step.points.map((p) => (
+                  <li key={p} className="px-3.5 py-1.5 rounded-full border border-ink/25 text-xs font-heading font-semibold">
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="relative aspect-[16/11] rounded-[28px] overflow-hidden bg-ink shadow-[0_40px_80px_-30px_rgba(4,9,30,0.6)]">
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={step.image}
+                initial={{ clipPath: 'inset(100% 0 0 0)' }}
+                animate={{ clipPath: 'inset(0% 0 0 0)' }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.9, ease: EASE }}
+                className="absolute inset-0"
+              >
+                <Image src={step.image} alt={step.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* Mobile: vertical */}
-        <div className="lg:hidden flex flex-col gap-8 relative pl-16">
-          <div className="absolute left-[34px] top-0 bottom-0 w-px bg-[#1B2F8A]/60" />
-          {steps.map((step, i) => (
-            <Reveal key={step.number} delay={i * 0.06}>
-              <div className="relative flex gap-4">
-                <div className="absolute -left-[46px] w-[56px] h-[56px] rounded-full border-2 border-[#1B2F8A] bg-[#0A1547] flex flex-col items-center justify-center shrink-0">
-                  <SteelIcon name={step.icon} size={22} color="gold" />
-                </div>
-                <div className="pt-2">
-                  <span className="text-eyebrow block mb-1">{step.number}</span>
-                  <h3 className="text-h3 font-heading text-white mb-1">{step.title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{step.description}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+        {/* Tagline */}
+        <div className="mt-16 pt-8 border-t border-ink/15 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <Reveal>
+            <p className="font-heading uppercase text-[clamp(1.25rem,2.4vw,2rem)] font-light">Four stages.</p>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="font-heading uppercase text-[clamp(1.25rem,2.4vw,2rem)] font-extrabold">One accountable team.</p>
+          </Reveal>
         </div>
       </Container>
     </section>

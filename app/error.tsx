@@ -1,37 +1,30 @@
 'use client'
 import { useEffect } from 'react'
-import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
-import { AlertTriangle } from 'lucide-react'
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string }
-  reset: () => void
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error)
   }, [error])
 
   return (
-    <div className="min-h-screen bg-ink flex items-center justify-center">
-      <Container>
-        <div className="flex flex-col items-center text-center gap-6 py-20">
-          <div className="w-16 h-16 rounded-full border border-accent/30 bg-accent/10 flex items-center justify-center">
-            <AlertTriangle size={24} className="text-accent" />
-          </div>
-          <div>
-            <p className="text-eyebrow mb-3">Error</p>
-            <h1 className="text-h1 font-heading text-paper mb-4">Something went wrong</h1>
-            <p className="text-body text-mute max-w-sm">
-              An unexpected error occurred. Please try again.
-            </p>
-          </div>
-          <Button onClick={reset}>Try again</Button>
+    <div className="min-h-screen bg-paper p-[clamp(8px,1.2vw,16px)] flex">
+      <div className="frame !m-0 flex-1 bg-ink text-white flex flex-col items-center justify-center text-center px-6">
+        <p className="text-eyebrow mb-5">Error</p>
+        <h1 className="h-mix text-display">
+          Something <strong>went wrong</strong>
+          <span className="text-accent font-extrabold">.</span>
+        </h1>
+        <p className="mt-6 text-white/60 max-w-sm">An unexpected error occurred. Please try again.</p>
+        <div className="mt-8 flex flex-wrap gap-3 justify-center">
+          <Button onClick={reset} arrow>
+            Try again
+          </Button>
+          <Button href="/" variant="outline-light">
+            Back to home
+          </Button>
         </div>
-      </Container>
+      </div>
     </div>
   )
 }

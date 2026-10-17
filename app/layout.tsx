@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import localFont from 'next/font/local'
+import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
 import SmoothScrollProvider from '@/components/motion/SmoothScrollProvider'
 
@@ -10,12 +9,12 @@ const inter = Inter({
   display: 'swap',
 })
 
-/* Using Inter Tight as heading font — close to the Satoshi/General Sans aesthetic */
-const interTight = Inter({
+/* Montserrat — wide geometric caps for the light/bold mixed headlines */
+const montserrat = Montserrat({
   subsets: ['latin'],
   variable: '--font-heading',
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
@@ -70,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${interTight.variable}`}>
+    <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
       <body>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>

@@ -1,76 +1,86 @@
 'use client'
 import React from 'react'
+import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { motion } from 'framer-motion'
+
+type Variant = 'gold' | 'navy' | 'outline' | 'outline-light' | 'white' | 'ghost'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
+  variant?: Variant
   size?: 'sm' | 'md' | 'lg'
-  asChild?: boolean
   href?: string
   download?: boolean | string
+  /** Show the Atlas-style ↗ arrow that tilts on hover */
+  arrow?: boolean
+}
+
+const variants: Record<Variant, string> = {
+  gold: 'bg-accent text-ink hover:bg-gold-light',
+  navy: 'bg-steel text-white hover:bg-royal',
+  outline: 'border border-ink/20 text-ink hover:border-ink hover:bg-ink hover:text-white',
+  'outline-light': 'border border-white/30 text-white hover:border-accent hover:text-accent',
+  white: 'bg-white text-ink hover:bg-accent',
+  ghost: 'text-ink hover:text-accent',
+}
+
+const sizes = {
+  sm: 'text-xs px-4 h-9',
+  md: 'text-sm px-5 h-11',
+  lg: 'text-sm px-7 h-[52px]',
 }
 
 export function Button({
-  variant = 'primary',
+  variant = 'gold',
   size = 'md',
   className,
   children,
   href,
   download,
+  arrow = false,
   ...props
 }: ButtonProps) {
-  const base =
-    'inline-flex items-center justify-center gap-2 font-heading font-500 tracking-tight transition-all duration-200 cursor-pointer select-none rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-steel disabled:opacity-50 disabled:pointer-events-none min-h-[44px] min-w-[44px]'
+  const classes = cn(
+    'group/btn relative inline-flex items-center justify-center gap-2 rounded-full font-heading font-semibold tracking-tight',
+    'transition-[background-color,color,border-color,transform] duration-300 ease-out-expo active:scale-[0.97]',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+    'disabled:opacity-50 disabled:pointer-events-none select-none whitespace-nowrap',
+    variants[variant],
+    sizes[size],
+    className
+  )
 
-  const variants = {
-    primary:
-      'bg-accent text-white hover:bg-accent-2 active:scale-[0.98] shadow-sm',
-    secondary:
-      'bg-steel-2 text-paper border border-line hover:border-accent hover:text-white active:scale-[0.98]',
-    ghost: 'text-mute hover:text-paper active:scale-[0.98]',
-    outline:
-      'border border-paper/30 text-paper hover:border-accent hover:text-accent active:scale-[0.98]',
-  }
-
-  const sizes = {
-    sm: 'text-sm px-4 py-2',
-    md: 'text-sm px-6 py-3',
-    lg: 'text-base px-8 py-4',
-  }
-
-  const classes = cn(base, variants[variant], sizes[size], className)
+  const content = (
+    <>
+      {children}
+      {arrow && (
+        <ArrowUpRight
+          size={size === 'sm' ? 14 : 16}
+          className="transition-transform duration-300 ease-out-expo group-hover/btn:rotate-45"
+        />
+      )}
+    </>
+  )
 
   if (href) {
+    const internal = href.startsWith('/') && !download && !href.endsWith('.pdf')
+    if (internal) {
+      return (
+        <Link href={href} className={classes}>
+          {content}
+        </Link>
+      )
+    }
     return (
       <a href={href} className={classes} download={download}>
-        {children}
+        {content}
       </a>
     )
   }
 
   return (
     <button className={classes} {...props}>
-      {children}
-    </button>
-  )
-}
-
-interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string
-}
-
-export function IconButton({ label, className, children, ...props }: IconButtonProps) {
-  return (
-    <button
-      aria-label={label}
-      className={cn(
-        'inline-flex items-center justify-center w-11 h-11 rounded transition-colors duration-200 text-mute hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-        className
-      )}
-      {...props}
-    >
-      {children}
+      {content}
     </button>
   )
 }

@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import { ChevronDown, ArrowUpRight, Phone } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Phone, Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { LangSwitcher } from '@/components/ui/LangSwitcher'
 import { SteelIcon } from '@/components/ui/SteelIcon'
 import { services } from '@/lib/content/services'
 import { company } from '@/lib/content/company'
@@ -18,21 +17,22 @@ const navLinks = [
   { label: 'Services', href: '/services', hasMega: true },
   { label: 'Projects', href: '/projects' },
   { label: 'Certifications', href: '/certifications' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Insights', href: '/blog' },
 ]
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
-  const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const { scrollY } = useScroll()
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 80)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0
+    setScrolled(y > 60)
+    setHidden(y > 400 && y > prev && !megaOpen)
+  })
 
   useEffect(() => {
     setMobileOpen(false)
@@ -41,41 +41,59 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [mobileOpen])
 
-  const isHome = pathname === '/'
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
     <>
-      <header
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          scrolled || !isHome
-            ? 'bg-[#04091E]/95 backdrop-blur-md border-b border-[#1B2F8A]/60'
-            : 'bg-transparent'
-        )}
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: hidden && !mobileOpen ? -120 : 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed top-0 inset-x-0 z-50 pt-[clamp(8px,1.2vw,16px)] px-[clamp(8px,1.2vw,16px)]"
       >
-        <div className="w-full max-w-[1320px] mx-auto container-px">
-          <div className="flex items-center justify-between h-[72px]">
+        <div
+          className={cn(
+            'mx-auto transition-all duration-500 ease-out-expo rounded-[22px]',
+            scrolled
+              ? 'max-w-[1240px] bg-ink/80 backdrop-blur-xl shadow-[0_20px_50px_-20px_rgba(4,9,30,0.6)] border border-white/10 mt-2'
+              : 'max-w-full bg-transparent border border-transparent'
+          )}
+        >
+          <div
+            className={cn(
+              'flex items-center justify-between transition-all duration-500',
+              scrolled ? 'h-[64px] px-4 sm:px-5' : 'h-[84px] container-px'
+            )}
+          >
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label="iSteel home">
-              <Image
-                src="/assets/logos/iSTEEL-Logo.png"
-                alt="iSteel Engineering Trading & Contracting"
-                width={44}
-                height={44}
-                className="object-contain shrink-0"
-                priority
-              />
-              <div className="hidden sm:flex flex-col min-w-0">
-                <span className="font-heading font-semibold text-paper text-sm leading-none whitespace-nowrap">iSteel Engineering</span>
-                <span className="text-mute text-[9px] tracking-[0.12em] uppercase mt-0.5 whitespace-nowrap">Trading &amp; Contracting W.L.L</span>
-              </div>
+            <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="iSteel home">
+              <motion.span whileHover={{ rotate: 12 }} className="block">
+                <Image
+                  src="/assets/logos/iSTEEL-Logo.png"
+                  alt="iSteel Engineering Trading & Contracting"
+                  width={scrolled ? 40 : 48}
+                  height={scrolled ? 40 : 48}
+                  className="object-contain transition-all duration-500"
+                  priority
+                />
+              </motion.span>
+              <span className="hidden sm:flex flex-col leading-none">
+                <span className="font-heading font-extrabold text-white text-[17px] tracking-tight">
+                  iSTEEL<span className="text-accent">.</span>
+                </span>
+                <span className="font-heading text-white/50 text-[8.5px] tracking-[0.22em] uppercase mt-1">
+                  Engineering · Qatar
+                </span>
+              </span>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+            {/* Desktop nav — Atlas-style ruled links */}
+            <nav className="hidden xl:flex items-center gap-5" aria-label="Main navigation">
               {navLinks.map((link) =>
                 link.hasMega ? (
                   <div
@@ -84,53 +102,63 @@ export function Header() {
                     onMouseEnter={() => setMegaOpen(true)}
                     onMouseLeave={() => setMegaOpen(false)}
                   >
-                    <button
+                    <Link
+                      href={link.href}
+                      aria-expanded={megaOpen}
                       className={cn(
-                        'flex items-center gap-1 px-4 py-2 text-sm font-heading font-medium rounded transition-colors duration-200',
-                        pathname.startsWith('/services')
-                          ? 'text-accent'
-                          : 'text-mute hover:text-paper'
+                        'flex items-center justify-between gap-6 w-[112px] pt-2 pb-1.5 border-t text-[13px] font-heading font-medium text-white transition-colors duration-300',
+                        isActive(link.href) || megaOpen ? 'border-accent text-accent' : 'border-white/40 hover:border-accent'
                       )}
                     >
                       {link.label}
-                      <ChevronDown
-                        size={14}
-                        className={cn('transition-transform duration-200', megaOpen && 'rotate-180')}
-                      />
-                    </button>
-
+                      <ChevronDown size={13} className={cn('transition-transform duration-300', megaOpen && 'rotate-180')} />
+                    </Link>
                     <AnimatePresence>
                       {megaOpen && (
                         <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 8 }}
-                          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[720px] bg-[#04091E] border border-[#1B2F8A]/60 rounded-lg shadow-[0_24px_64px_-12px_rgba(0,0,0,0.9)] p-6"
+                          initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                          className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[760px]"
                         >
-                          <div className="grid grid-cols-3 gap-2">
-                            {services.map((svc) => (
-                              <Link
-                                key={svc.slug}
-                                href={`/services/${svc.slug}`}
-                                className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#10206A]/60 transition-colors duration-200 group/item"
-                              >
-                                <SteelIcon name={svc.icon} size={20} color="gold" className="mt-0.5 shrink-0 opacity-80 group-hover/item:opacity-100 transition-opacity" />
-                                <div>
-                                  <div className="text-[10px] text-accent mb-0.5 tracking-widest uppercase">{svc.number}</div>
-                                  <div className="text-sm text-paper group-hover/item:text-accent transition-colors duration-200 leading-snug">
-                                    {svc.title}
-                                  </div>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                          <div className="mt-4 pt-4 border-t border-[#1B2F8A]/60">
+                          <div className="bg-paper rounded-[24px] p-3 shadow-[0_40px_80px_-24px_rgba(4,9,30,0.55)] grid grid-cols-[1fr_220px] gap-3">
+                            <div className="grid grid-cols-2 gap-1 p-2">
+                              {services.map((svc) => (
+                                <Link
+                                  key={svc.slug}
+                                  href={`/services/${svc.slug}`}
+                                  className="group/item flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white transition-colors duration-200"
+                                >
+                                  <span className="text-[10px] font-heading font-bold text-accent w-5">{svc.number}</span>
+                                  <span className="text-[13px] text-ink font-medium leading-snug flex-1">{svc.title}</span>
+                                  <ArrowUpRight
+                                    size={13}
+                                    className="text-accent opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-300"
+                                  />
+                                </Link>
+                              ))}
+                            </div>
                             <Link
                               href="/services"
-                              className="flex items-center gap-2 text-sm text-mute hover:text-accent transition-colors duration-200"
+                              className="relative rounded-[18px] overflow-hidden flex flex-col justify-end p-5 group/card"
                             >
-                              View all services <ArrowRight size={13} />
+                              <Image
+                                src="/assets/envato/Images/21.jpeg"
+                                alt=""
+                                fill
+                                sizes="220px"
+                                className="object-cover transition-transform duration-700 group-hover/card:scale-110"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
+                              <div className="relative">
+                                <div className="h-mix text-white text-xl">
+                                  <strong>12</strong> services
+                                </div>
+                                <div className="mt-2 flex items-center gap-1.5 text-accent text-xs font-heading font-semibold">
+                                  View all <ArrowUpRight size={13} />
+                                </div>
+                              </div>
                             </Link>
                           </div>
                         </motion.div>
@@ -142,10 +170,10 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      'px-4 py-2 text-sm font-heading font-medium rounded transition-colors duration-200',
-                      pathname === link.href
-                        ? 'text-accent'
-                        : 'text-mute hover:text-paper'
+                      'w-[112px] pt-2 pb-1.5 border-t text-[13px] font-heading font-medium transition-colors duration-300',
+                      isActive(link.href)
+                        ? 'border-accent text-accent'
+                        : 'border-white/40 text-white hover:border-accent'
                     )}
                   >
                     {link.label}
@@ -154,107 +182,85 @@ export function Header() {
               )}
             </nav>
 
-            {/* Right actions */}
-            <div className="flex items-center gap-3">
-              <a
-                href={`tel:${company.phone}`}
-                className="hidden md:flex items-center gap-2 text-sm text-mute hover:text-paper transition-colors duration-200"
-              >
-                <Phone size={14} className="text-accent" />
-                <span className="font-heading">{company.phone}</span>
-              </a>
-              <LangSwitcher className="hidden md:flex" />
-              <Button
-                href="/contact"
-                size="sm"
-                className="hidden md:inline-flex rounded-full bg-accent text-ink hover:bg-accent-2 font-semibold"
-              >
-                Get a Quote
+            <div className="flex items-center gap-2">
+              <Button href="/contact" variant="outline-light" size="sm" arrow className="hidden md:inline-flex">
+                Contact us
               </Button>
               <button
-                className="lg:hidden p-2 text-mute hover:text-paper transition-colors duration-200"
-                onClick={() => setMobileOpen(!mobileOpen)}
+                className="xl:hidden relative w-11 h-11 rounded-full bg-white/10 backdrop-blur flex items-center justify-center"
+                onClick={() => setMobileOpen((o) => !o)}
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={mobileOpen}
               >
-                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+                <span className="relative w-5 h-3">
+                  <span
+                    className={cn(
+                      'absolute left-0 right-0 h-[2px] bg-white rounded transition-all duration-300',
+                      mobileOpen ? 'top-[5px] rotate-45' : 'top-0'
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      'absolute left-0 h-[2px] bg-accent rounded transition-all duration-300',
+                      mobileOpen ? 'top-[5px] right-0 -rotate-45 bg-white' : 'top-[10px] right-1.5'
+                    )}
+                  />
+                </span>
               </button>
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-[#04091E] flex flex-col"
+            initial={{ clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
+            animate={{ clipPath: 'circle(150% at calc(100% - 40px) 40px)' }}
+            exit={{ clipPath: 'circle(0% at calc(100% - 40px) 40px)' }}
+            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 bg-ink flex flex-col pt-[110px] pb-10 container-px overflow-y-auto"
+            data-lenis-prevent
           >
-            {/* Mobile header */}
-            <div className="flex items-center justify-between h-[72px] container-px border-b border-[#1B2F8A]/60">
-              <Link href="/" aria-label="iSteel home">
-                <Image
-                  src="/assets/logos/iSTEEL-Logo.png"
-                  alt="iSteel"
-                  width={44}
-                  height={44}
-                  className="object-contain"
-                />
-              </Link>
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="p-2 text-mute hover:text-paper"
-                aria-label="Close menu"
-              >
-                <X size={22} />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto pb-12 container-px pt-4">
-              <nav className="flex flex-col gap-1">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        'block py-4 text-h2 font-heading font-semibold border-b border-[#1B2F8A]/40 transition-colors duration-200',
-                        pathname === link.href || pathname.startsWith(link.href + '/')
-                          ? 'text-accent'
-                          : 'text-paper hover:text-accent'
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
-                className="mt-8 flex flex-col gap-4"
-              >
-                <Button href="/contact" size="lg" className="w-full justify-center bg-accent text-ink hover:bg-accent-2 font-semibold">
-                  Get a Quote
-                </Button>
-                <a
-                  href={`tel:${company.phone}`}
-                  className="flex items-center justify-center gap-2 py-3 border border-[#1B2F8A] rounded text-paper"
+            <nav className="flex flex-col">
+              {[...navLinks, { label: 'Contact', href: '/contact' }].map((link, i) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 + i * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <Phone size={16} className="text-accent" />
-                  {company.phone}
-                </a>
-              </motion.div>
-            </div>
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      'flex items-center justify-between py-4 border-b border-white/10 h-mix text-[clamp(1.75rem,7vw,2.5rem)]',
+                      isActive(link.href) ? 'text-accent !font-bold' : 'text-white'
+                    )}
+                  >
+                    {link.label}
+                    <ArrowUpRight size={22} className="text-accent" />
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-auto pt-10 flex flex-col gap-3"
+            >
+              <Button href="/contact" size="lg" arrow className="w-full">
+                Let&rsquo;s discuss your project
+              </Button>
+              <a
+                href={`tel:${company.phone}`}
+                className="flex items-center justify-center gap-2 h-[52px] rounded-full border border-white/20 text-white text-sm font-heading"
+              >
+                <Phone size={15} className="text-accent" />
+                {company.phone}
+              </a>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

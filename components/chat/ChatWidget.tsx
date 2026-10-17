@@ -109,7 +109,7 @@ const now = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '
 const INITIAL: Message = {
   role: 'bot',
   text: "Hello! I'm the iSteel assistant. Ask me about our services, projects, certifications, or how to get a quote.",
-  time: now(),
+  time: '', // set on mount — a build-time timestamp would mismatch on hydration
 }
 
 export function ChatWidget() {
@@ -119,6 +119,10 @@ export function ChatWidget() {
   const [typing, setTyping] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setMessages((prev) => prev.map((m, i) => (i === 0 && !m.time ? { ...m, time: now() } : m)))
+  }, [])
 
   useEffect(() => {
     if (open) {
@@ -159,12 +163,12 @@ export function ChatWidget() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? 'Close chat' : 'Chat with iSteel assistant'}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_8px_32px_-4px_rgba(10,21,71,0.45)] transition-all duration-300 hover:scale-105 active:scale-95"
-        style={{ background: open ? '#D4A020' : '#0A1547' }}
+        style={{ background: open ? '#0A1547' : '#D4A020' }}
       >
-        {open ? <ChevronDown size={22} color="white" /> : <MessageCircle size={22} color="white" />}
+        {open ? <ChevronDown size={22} color="white" /> : <MessageCircle size={22} color="#04091E" />}
         {/* Pulse ring when closed */}
         {!open && (
-          <span className="absolute inset-0 rounded-full animate-ping bg-[#0A1547]/30 pointer-events-none" />
+          <span className="absolute inset-0 rounded-full animate-ping bg-[#D4A020]/30 pointer-events-none" />
         )}
       </button>
 

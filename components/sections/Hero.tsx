@@ -1,182 +1,178 @@
 'use client'
-import React from 'react'
+import React, { useRef } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { ArrowRight, Download } from 'lucide-react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { Eyebrow } from '@/components/ui/Eyebrow'
-import { SplitText } from '@/components/motion/SplitText'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { company } from '@/lib/content/company'
 
+const EASE = [0.16, 1, 0.3, 1] as const
+const R = 32 // inverted-corner radius (px)
+
+/** Concave corner piece — fills the outside of a quarter circle with the card colour. */
+function Notch({ className, at }: { className: string; at: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`absolute hidden lg:block ${className}`}
+      style={{
+        width: R,
+        height: R,
+        background: `radial-gradient(circle at ${at}, transparent ${R - 0.5}px, var(--brand-ink) ${R}px)`,
+      }}
+    />
+  )
+}
+
+function Line({ children, delay, className }: { children: React.ReactNode; delay: number; className?: string }) {
+  return (
+    <span className="block overflow-hidden pb-[0.04em]">
+      <motion.span
+        className={`block ${className ?? ''}`}
+        initial={{ y: '105%' }}
+        animate={{ y: 0 }}
+        transition={{ duration: 1.1, delay, ease: EASE }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  )
+}
+
 export function Hero() {
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1.08, 1.2])
+  const panelY = useTransform(scrollYProgress, [0, 1], ['0%', '-25%'])
+
   return (
     <section
-      className="relative min-h-[100svh] flex flex-col justify-end pb-16 md:pb-24 overflow-hidden bg-[#04091E]"
+      ref={ref}
       aria-label="Hero"
+      className="frame mt-[clamp(8px,1.2vw,16px)] relative bg-ink text-white overflow-hidden flex flex-col
+                 min-h-[calc(100svh-clamp(16px,2.4vw,32px))] p-[clamp(10px,1.4vw,18px)] pt-[96px] lg:pt-[104px]"
     >
-      {/* Envato background photo */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/assets/envato/Images/18.jpeg"
-          alt="iSteel Engineering site supervisor on Qatar construction project"
-          fill
-          className="object-cover object-center"
-          priority
-          quality={80}
-          sizes="100vw"
-        />
-      </div>
-
-      {/* Multi-layer overlay — deep navy tint to match logo palette */}
-      <div className="absolute inset-0 z-[1]"
-        style={{
-          background: 'linear-gradient(135deg, rgba(4,9,30,0.93) 0%, rgba(4,9,30,0.55) 55%, rgba(10,21,71,0.80) 100%)',
-        }}
-      />
-
-      {/* Metal texture overlay — subtle depth */}
-      <div className="absolute inset-0 z-[2] opacity-[0.06] mix-blend-overlay"
-        style={{
-          backgroundImage: 'url(/assets/envato/Metal\\ Textures\\ 3.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-
-      {/* Logo-blue left accent strip */}
-      <div className="absolute top-0 left-0 w-1 h-full z-[3]"
-        style={{ background: 'linear-gradient(to bottom, #D4A020 0%, #1B2F8A 40%, transparent 100%)' }}
-      />
-
-      {/* Diagonal gold line */}
-      <div className="absolute top-0 left-0 w-px h-full z-[3] origin-top"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(212,160,32,0.6) 0%, transparent 60%)',
-          transform: 'translateX(calc(clamp(20px,4vw,56px) + 1px))',
-        }}
-      />
-
-      {/* Content */}
-      <div className="relative z-10 w-full max-w-[1320px] mx-auto container-px">
+      <div className="relative flex-1 flex flex-col lg:block">
+        {/* Title panel — sits in the image's top-left notch on desktop */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="max-w-3xl"
+          style={{ y: panelY }}
+          className="relative z-20 bg-ink lg:absolute lg:top-0 lg:left-0 lg:rounded-br-[36px] px-2 pb-8 lg:pl-[clamp(20px,3vw,44px)] lg:pr-14 lg:pb-12 lg:pt-6 lg:max-w-[min(56vw,840px)]"
         >
-          {/* iSteel logo mark above eyebrow */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-5"
-          >
-            <Image
-              src="/assets/logos/iSTEEL-Logo.png"
-              alt="iSteel Engineering"
-              width={72}
-              height={72}
-              className="object-contain"
-              priority
-            />
-          </motion.div>
+          <Notch className="top-0 left-full" at="100% 100%" />
+          <Notch className="top-full left-0" at="100% 100%" />
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
+            className="text-eyebrow mb-5 flex items-center gap-3"
           >
-            <Eyebrow className="mb-5">Est. {company.established} — Doha, Qatar</Eyebrow>
-          </motion.div>
+            <span className="w-8 h-px bg-accent" />
+            Est. {company.established} — Doha, Qatar
+          </motion.p>
 
-          <h1 className="text-display font-heading text-paper mb-6">
-            <SplitText
-              text="We build the bones"
-              className="block"
-              delay={0.3}
-            />
-            <SplitText
-              text="of every building."
-              className="block text-gold-gradient"
-              delay={0.45}
-            />
+          <h1 className="h-mix text-mega">
+            <Line delay={0.3}>Redefining</Line>
+            <Line delay={0.42} className="font-extrabold">
+              Steel<span className="text-accent">.</span>
+            </Line>
           </h1>
 
           <motion.p
-            className="text-body text-paper/70 max-w-xl mb-10"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.75, ease: EASE }}
+            className="mt-6 text-white/70 text-[15px] leading-relaxed max-w-[420px]"
           >
-            End-to-end Structural Steel and Turnkey Construction — Warehouses, Schools, Malls,
-            High-rises and Industrial Facilities. One accountable partner from drawing to final bolt.
+            Design, fabrication, blasting, painting and erection — <strong className="text-white font-semibold">all under one roof</strong>.
+            What can we build for you?
           </motion.p>
 
           <motion.div
-            className="flex flex-wrap gap-4"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.9, ease: EASE }}
+            className="mt-7 flex flex-wrap gap-3"
           >
             <Magnetic>
-              <Button
-                href="/projects"
-                size="lg"
-                className="group bg-accent text-ink hover:bg-accent-2 font-semibold"
-              >
-                View Our Projects
-                <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+              <Button href="/contact" size="lg" arrow>
+                Let&rsquo;s discuss your project
               </Button>
             </Magnetic>
-            <Magnetic>
-              <Button
-                href={company.companyProfilePdf}
-                variant="outline"
-                size="lg"
-                className="group border-paper/30 text-paper hover:border-accent hover:text-accent"
-                download
-              >
-                <Download size={16} />
-                Company Profile
-              </Button>
-            </Magnetic>
-          </motion.div>
-
-          {/* Trust strip — under CTAs */}
-          <motion.div
-            className="flex flex-wrap items-center gap-6 mt-12 pt-8 border-t border-white/10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.0 }}
-          >
-            {['ISO 9001 Certified', 'ISO 14001 · ISO 45001', 'ICV Certified', '5+ Years of Service'].map((badge) => (
-              <span key={badge} className="flex items-center gap-2 text-xs text-paper/60">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                {badge}
-              </span>
-            ))}
+            <Button href="/projects" variant="outline-light" size="lg">
+              Our work
+            </Button>
           </motion.div>
         </motion.div>
-      </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 right-[clamp(20px,4vw,56px)] z-10 flex flex-col items-center gap-2">
+        {/* Image */}
         <motion.div
-          className="text-[9px] tracking-[0.25em] uppercase text-paper/40 [writing-mode:vertical-rl]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          initial={{ clipPath: 'inset(8% 8% 8% 8% round 28px)', opacity: 0 }}
+          animate={{ clipPath: 'inset(0% 0% 0% 0% round 28px)', opacity: 1 }}
+          transition={{ duration: 1.4, delay: 0.1, ease: EASE }}
+          className="relative flex-1 min-h-[420px] lg:absolute lg:inset-0 rounded-[28px] overflow-hidden"
         >
-          Scroll
+          <motion.div style={{ y: imgY, scale: imgScale }} className="absolute inset-0">
+            <Image
+              src="/assets/envato/Images/18.jpeg"
+              alt="iSteel site engineer overseeing a steel lift on a Doha construction site"
+              fill
+              priority
+              quality={85}
+              sizes="100vw"
+              className="object-cover object-[50%_35%]"
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-ink/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/40 via-transparent to-transparent hidden lg:block" />
         </motion.div>
-        <div className="relative w-px h-16 bg-white/10 overflow-hidden">
-          <motion.div
-            className="absolute top-0 left-0 right-0 h-8 bg-accent"
-            animate={{ y: ['-100%', '200%'] }}
-            transition={{ repeat: Infinity, duration: 1.6, ease: 'linear' }}
-          />
+
+        {/* Floating stats */}
+        <div className="absolute z-20 right-3 bottom-3 sm:right-5 sm:bottom-5 flex gap-2 sm:gap-3">
+          {[
+            { v: company.stats.projectsDelivered, l: 'Projects delivered' },
+            { v: company.stats.tonnesFabricated, l: 'Tonnes / year' },
+          ].map((s, i) => (
+            <motion.div
+              key={s.l}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 1.1 + i * 0.12, ease: EASE }}
+              className="rounded-[18px] bg-ink/55 backdrop-blur-xl border border-white/15 px-4 py-3 sm:px-5 sm:py-4 min-w-[120px]"
+            >
+              <div className="font-heading text-2xl sm:text-3xl font-light leading-none">
+                {s.v.replace('+', '')}
+                <span className="text-accent font-bold">+</span>
+              </div>
+              <div className="mt-1.5 text-[10px] uppercase tracking-[0.18em] text-white/60 font-heading">{s.l}</div>
+            </motion.div>
+          ))}
         </div>
+
+        {/* Rotating badge */}
+        <motion.a
+          href="#mission"
+          aria-label="Scroll to content"
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, delay: 1.3, ease: EASE }}
+          className="hidden md:flex absolute z-20 left-5 bottom-5 w-[118px] h-[118px] items-center justify-center group"
+        >
+          <svg viewBox="0 0 120 120" className="absolute inset-0 animate-spin-slow">
+            <defs>
+              <path id="circle" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" />
+            </defs>
+            <text className="fill-white/80 font-heading" fontSize="9.5" letterSpacing="3.2">
+              <textPath href="#circle">ISTEEL ENGINEERING • DOHA QATAR •</textPath>
+            </text>
+          </svg>
+          <span className="w-12 h-12 rounded-full bg-accent text-ink flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </span>
+        </motion.a>
       </div>
     </section>
   )

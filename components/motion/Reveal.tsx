@@ -10,7 +10,7 @@ interface RevealProps {
   y?: number
 }
 
-export function Reveal({ children, delay = 0, className, y = 12 }: RevealProps) {
+export function Reveal({ children, delay = 0, className, y = 24 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-50px' })
 
@@ -20,7 +20,7 @@ export function Reveal({ children, delay = 0, className, y = 12 }: RevealProps) 
       initial={{ opacity: 0, y }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y }}
       transition={{
-        duration: 0.7,
+        duration: 0.9,
         delay,
         ease: [0.16, 1, 0.3, 1],
       }}

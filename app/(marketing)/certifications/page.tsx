@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
-import { ShieldCheck, Award, CheckCircle } from 'lucide-react'
+import { ShieldCheck, Award, Quote } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Reveal } from '@/components/motion/Reveal'
+import { SplitText } from '@/components/motion/SplitText'
+import { PageHero } from '@/components/sections/PageHero'
 import { CTABanner } from '@/components/sections/CTABanner'
-import { SteelIcon } from '@/components/ui/SteelIcon'
 import { certifications } from '@/lib/content/certifications'
 
 export const metadata: Metadata = {
@@ -15,116 +15,142 @@ export const metadata: Metadata = {
 }
 
 const isoCerts = certifications.filter((c) => c.type === 'certification')
+const awards = certifications.filter((c) => c.type === 'award')
 const appreciations = certifications.filter((c) => c.type === 'appreciation')
-
-const whyItMatters = [
-  'Verified quality management at every production stage',
-  'Environmentally responsible operations and waste management',
-  'World-class occupational health and safety protocols',
-  "Compliance with Qatar's In-Country Value (ICV) programme requirements",
-]
 
 export default function CertificationsPage() {
   return (
     <>
-      {/* Dark hero header */}
-      <div className="relative pt-[120px] pb-24 overflow-hidden">
-        <Image
-          src="/assets/envato/Metal Textures 3.jpg"
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          aria-hidden="true"
-          priority
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(135deg, rgba(4,9,30,0.96) 0%, rgba(10,21,71,0.93) 100%)' }}
-        />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none">
-          <SteelIcon name="016-steel" size={360} color="white" />
-        </div>
+      <PageHero
+        eyebrow="Quality & compliance"
+        light="Certified to"
+        bold="Global standards"
+        description={
+          <>
+            Verified quality, environmental and safety management at every production stage — and full compliance with{' '}
+            <strong className="text-white">Qatar&rsquo;s In-Country Value programme</strong>.
+          </>
+        }
+        image="/assets/envato/Steel Pipes.H03.2k.png"
+        imageAlt="3D render of steel pipes"
+        contain
+        breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Certifications' }]}
+      />
 
-        <Container className="relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <Reveal>
-              <Eyebrow className="mb-4">Quality &amp; compliance</Eyebrow>
-              <h1 className="text-h1 font-heading text-paper max-w-2xl">
-                Certified to the highest international standards
-              </h1>
-            </Reveal>
+      {/* Certifications */}
+      <section className="section-py">
+        <Container>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+              <Reveal>
+                <Eyebrow className="mb-5">Accreditations</Eyebrow>
+              </Reveal>
+              <h2 className="h-mix text-h1 text-ink">
+                <SplitText text="Our" /> <SplitText text="certifications" className="font-extrabold" delay={0.06} />
+                <span className="text-accent font-extrabold">.</span>
+              </h2>
+            </div>
             <Reveal delay={0.1}>
-              <ul className="flex flex-col gap-3">
-                {whyItMatters.map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <CheckCircle size={16} className="text-[#D4A020] mt-0.5 shrink-0" />
-                    <span className="text-sm text-mute">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-copy max-w-sm text-sm leading-relaxed">
+                Audited by Quality Austria and IQNET. Each certificate covers design, fabrication, supply and installation of
+                steel structures.
+              </p>
             </Reveal>
           </div>
-        </Container>
-      </div>
 
-      {/* ISO Certifications — white */}
-      <div className="bg-white py-16 lg:py-20">
-        <Container>
-          <Reveal>
-            <div className="flex items-center gap-3 mb-10">
-              <ShieldCheck size={22} className="text-[#D4A020]" />
-              <h2 className="text-h2 font-heading text-[#04091E]">Certifications</h2>
-            </div>
-          </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {isoCerts.map((cert, i) => (
-              <Reveal key={cert.id} delay={i * 0.07}>
-                <div className="p-6 bg-[#F8FAFF] border border-[#E0E8F5] rounded-xl flex flex-col items-center text-center gap-4 shadow-[0_2px_16px_-4px_rgba(10,21,71,0.06)] hover:shadow-[0_8px_32px_-8px_rgba(10,21,71,0.12)] hover:border-[#D4A020]/30 transition-all duration-300">
-                  <div className="w-16 h-16 rounded-full border-2 border-[#D4A020]/40 bg-[#D4A020]/10 flex items-center justify-center">
-                    <ShieldCheck size={28} className="text-[#D4A020]" />
+              <Reveal key={cert.id} delay={(i % 3) * 0.08}>
+                <article className="group relative h-full rounded-[28px] bg-white p-7 shadow-card overflow-hidden">
+                  <span className="absolute inset-0 bg-steel translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out-expo" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between">
+                      <span className="w-12 h-12 rounded-2xl bg-accent/15 flex items-center justify-center">
+                        <ShieldCheck size={22} className="text-accent" />
+                      </span>
+                      {cert.year && (
+                        <span className="text-[10px] font-heading uppercase tracking-[0.2em] text-copy/60 group-hover:text-white/50">
+                          {cert.year}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-8 font-heading text-2xl font-extrabold text-ink group-hover:text-white transition-colors">
+                      {cert.name}
+                    </h3>
+                    <p className="mt-1 text-sm font-heading font-medium text-accent">{cert.standard}</p>
+                    {cert.detail && (
+                      <p className="mt-4 text-sm text-copy leading-relaxed group-hover:text-white/60 transition-colors">{cert.detail}</p>
+                    )}
+                    <p className="mt-5 pt-4 border-t border-ink/10 group-hover:border-white/15 text-xs text-copy/70 group-hover:text-white/45 transition-colors">
+                      {cert.issuer}
+                    </p>
                   </div>
-                  <div>
-                    <h3 className="text-h3 font-heading text-[#04091E] mb-1">{cert.name}</h3>
-                    <p className="text-sm text-[#6080A0]">{cert.issuer}</p>
-                  </div>
-                </div>
+                </article>
               </Reveal>
             ))}
           </div>
+        </Container>
+      </section>
 
-          {/* Appreciation letters */}
-          <Reveal>
-            <div className="flex items-center gap-3 mb-10">
-              <Award size={22} className="text-[#D4A020]" />
-              <h2 className="text-h2 font-heading text-[#04091E]">Appreciation Letters</h2>
-            </div>
-          </Reveal>
-          {appreciations.length > 0 && appreciations[0].client?.startsWith('[TODO') ? (
-            <Reveal>
-              <div className="p-10 bg-[#F8FAFF] border border-[#E0E8F5] border-dashed rounded-xl text-center text-[#8090B0]">
-                Client appreciation letters will be added once confirmed with the client.
-                <br />
-                <span className="text-xs mt-1 block">Add letter details, client name, and year to <code>lib/content/certifications.ts</code></span>
-              </div>
-            </Reveal>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {appreciations.map((cert, i) => (
-                <Reveal key={cert.id} delay={i * 0.06}>
-                  <div className="p-6 bg-[#F8FAFF] border border-[#E0E8F5] rounded-xl shadow-[0_2px_16px_-4px_rgba(10,21,71,0.06)]">
-                    <div className="text-xs text-[#8090B0] uppercase tracking-widest mb-1">
-                      {cert.year}
-                    </div>
-                    <h3 className="text-h3 font-heading text-[#04091E] mb-1">{cert.name}</h3>
-                    <p className="text-sm text-[#6080A0]">{cert.client}</p>
+      {/* Awards */}
+      {awards.length > 0 && (
+        <section className="frame bg-accent text-ink relative overflow-hidden grain">
+          <Container className="py-[clamp(56px,7vw,100px)]">
+            {awards.map((a) => (
+              <div key={a.id} className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-14 items-center">
+                <Reveal>
+                  <div className="w-28 h-28 lg:w-36 lg:h-36 rounded-full bg-ink flex items-center justify-center">
+                    <Award size={52} className="text-accent" />
                   </div>
                 </Reveal>
-              ))}
-            </div>
-          )}
+                <div>
+                  <Reveal>
+                    <p className="text-eyebrow !text-ink/70">{a.year} · {a.client}</p>
+                  </Reveal>
+                  <h2 className="mt-3 h-mix text-h1">
+                    <SplitText text={a.standard} className="font-extrabold" />
+                  </h2>
+                  <Reveal delay={0.1}>
+                    <p className="mt-4 text-ink/75 max-w-2xl leading-relaxed">{a.detail}</p>
+                  </Reveal>
+                </div>
+              </div>
+            ))}
+          </Container>
+        </section>
+      )}
+
+      {/* Appreciation letters */}
+      <section className="section-py">
+        <Container>
+          <div className="text-center mb-12">
+            <Reveal>
+              <Eyebrow className="mb-5">In our clients&rsquo; words</Eyebrow>
+            </Reveal>
+            <h2 className="h-mix text-h1 text-ink">
+              <SplitText text="Letters of" /> <SplitText text="appreciation" className="font-extrabold" delay={0.08} />
+              <span className="text-accent font-extrabold">.</span>
+            </h2>
+          </div>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
+            {appreciations.map((cert, i) => (
+              <Reveal key={cert.id} delay={(i % 3) * 0.08} className="break-inside-avoid">
+                <article className="rounded-[26px] bg-white p-7 shadow-card">
+                  <Quote size={26} className="text-accent" fill="currentColor" />
+                  <p className="mt-5 text-ink leading-relaxed">{cert.detail}</p>
+                  <div className="mt-6 pt-5 border-t border-ink/10 flex items-center justify-between gap-3">
+                    <div>
+                      <div className="font-heading font-bold text-ink">{cert.client}</div>
+                      <div className="text-xs text-copy">{cert.name}</div>
+                    </div>
+                    {cert.year && <span className="text-[10px] font-heading uppercase tracking-[0.18em] text-copy/60">{cert.year}</span>}
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
         </Container>
-      </div>
+      </section>
 
       <CTABanner />
     </>

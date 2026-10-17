@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import { Hero } from '@/components/sections/Hero'
-import { StatsStrip } from '@/components/sections/StatsStrip'
-import { AboutSnapshot } from '@/components/sections/AboutSnapshot'
-import { ServicesGrid } from '@/components/sections/ServicesGrid'
+import { TickerBand } from '@/components/sections/TickerBand'
+import { Mission } from '@/components/sections/Mission'
+import { ServicesShowcase } from '@/components/sections/ServicesShowcase'
+import { ProcessSection } from '@/components/sections/ProcessSection'
+import { DNASection } from '@/components/sections/DNASection'
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { VideoSection } from '@/components/sections/VideoSection'
 import { CertificationsStrip } from '@/components/sections/CertificationsStrip'
-import { ProcessSection } from '@/components/sections/ProcessSection'
-import { CTABanner } from '@/components/sections/CTABanner'
+import { ClientsStrip } from '@/components/sections/ClientsStrip'
 import { ContactSection } from '@/components/sections/ContactSection'
 
 export const metadata: Metadata = {
@@ -20,14 +21,15 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <StatsStrip />
-      <AboutSnapshot />
-      <ServicesGrid />
+      <TickerBand />
+      <Mission />
+      <ServicesShowcase />
+      <ProcessSection />
+      <DNASection />
       <FeaturedProjects />
       <VideoSection />
+      <ClientsStrip />
       <CertificationsStrip />
-      <ProcessSection />
-      <CTABanner />
       <ContactSection />
     </>
   )

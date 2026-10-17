@@ -7,51 +7,55 @@ interface StatProps {
   value: string
   label: string
   className?: string
-  dark?: boolean  // true = on white bg, needs dark label text
+  /** true = on navy background */
+  light?: boolean
 }
 
-function parseNumber(val: string): { num: number; suffix: string; prefix: string } {
-  const prefix = ''
-  const clean = val.replace(/[^0-9.]/g, '')
-  const suffix = val.replace(/[0-9.]/g, '')
-  return { num: parseFloat(clean) || 0, suffix, prefix }
+function parseNumber(val: string) {
+  const num = parseFloat(val.replace(/[^0-9.]/g, '')) || 0
+  const suffix = val.replace(/[0-9.,]/g, '')
+  return { num, suffix }
 }
 
-export function Stat({ value, label, className, dark }: StatProps) {
+export function Stat({ value, label, className, light }: StatProps) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-50px' })
-  const [displayed, setDisplayed] = useState('0')
+  const [displayed, setDisplayed] = useState(0)
   const { num, suffix } = parseNumber(value)
-  const isPlaceholder = value.includes('[TODO]')
 
   useEffect(() => {
-    if (!isInView || isPlaceholder) return
-    const duration = 1400
+    if (!isInView) return
+    const duration = 1600
     const start = performance.now()
+    let raf = 0
     const frame = (now: number) => {
-      const elapsed = now - start
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      const current = Math.round(eased * num)
-      setDisplayed(current.toString())
-      if (progress < 1) requestAnimationFrame(frame)
-      else setDisplayed(num.toString())
+      const p = Math.min((now - start) / duration, 1)
+      setDisplayed(Math.round((1 - Math.pow(1 - p, 4)) * num))
+      if (p < 1) raf = requestAnimationFrame(frame)
     }
-    requestAnimationFrame(frame)
-  }, [isInView, num, isPlaceholder])
+    raf = requestAnimationFrame(frame)
+    return () => cancelAnimationFrame(raf)
+  }, [isInView, num])
 
   return (
-    <div ref={ref} className={cn('flex flex-col gap-1', className)}>
-      {isPlaceholder ? (
-        <span className="font-heading text-display text-accent/40 font-semibold">
-          —
-        </span>
-      ) : (
-        <span className="font-heading text-display font-semibold text-gold-gradient">
-          {displayed}{suffix}
-        </span>
-      )}
-      <span className={cn('text-sm', dark ? 'text-[#6080A0]' : 'text-paper/60')}>{label}</span>
+    <div ref={ref} className={cn('flex flex-col gap-2', className)}>
+      <span
+        className={cn(
+          'font-heading font-light tabular-nums leading-none text-[clamp(2.5rem,4.5vw,4rem)] tracking-tight',
+          light ? 'text-white' : 'text-ink'
+        )}
+      >
+        {displayed.toLocaleString('en-US')}
+        <span className="text-accent font-bold">{suffix}</span>
+      </span>
+      <span
+        className={cn(
+          'text-[11px] font-heading font-semibold uppercase tracking-[0.18em]',
+          light ? 'text-white/50' : 'text-copy/70'
+        )}
+      >
+        {label}
+      </span>
     </div>
   )
 }

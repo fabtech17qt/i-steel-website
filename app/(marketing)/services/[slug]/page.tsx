@@ -2,11 +2,13 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft, CheckCircle, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Eyebrow } from '@/components/ui/Eyebrow'
-import { Reveal } from '@/components/motion/Reveal'
 import { Button } from '@/components/ui/Button'
+import { Reveal } from '@/components/motion/Reveal'
+import { SplitText } from '@/components/motion/SplitText'
+import { PageHero } from '@/components/sections/PageHero'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { SteelIcon } from '@/components/ui/SteelIcon'
 import { services } from '@/lib/content/services'
@@ -28,160 +30,148 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+/** Split a title so the last word is the bold emphasis. */
+function splitTitle(title: string) {
+  const words = title.split(' ')
+  if (words.length < 2) return { light: undefined, bold: title }
+  return { light: words.slice(0, -1).join(' '), bold: words[words.length - 1] }
+}
+
 export default function ServiceDetailPage({ params }: Props) {
   const svc = services.find((s) => s.slug === params.slug)
   if (!svc) notFound()
 
   const isRender = svc.image.endsWith('.png')
-
   const currentIndex = services.findIndex((s) => s.slug === params.slug)
-  const prev = services[currentIndex - 1]
-  const next = services[currentIndex + 1]
+  const prev = services[(currentIndex - 1 + services.length) % services.length]
+  const next = services[(currentIndex + 1) % services.length]
+  const { light, bold } = splitTitle(svc.title)
+  const related = services.filter((s) => s.slug !== svc.slug).slice(0, 5)
 
   return (
     <>
-      {/* Dark hero header */}
-      <div className="relative pt-[120px] pb-20 overflow-hidden">
-        <Image
-          src={svc.image}
-          alt={svc.title}
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          priority
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(135deg, rgba(4,9,30,0.95) 0%, rgba(10,21,71,0.92) 100%)' }}
-        />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none">
-          <SteelIcon name={svc.icon} size={320} color="white" />
-        </div>
+      <PageHero
+        eyebrow={`Service ${svc.number}`}
+        light={light}
+        bold={bold}
+        size="h1"
+        description={svc.shortDescription}
+        image={svc.image}
+        imageAlt={svc.title}
+        contain={isRender}
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Services', href: '/services' },
+          { label: svc.title },
+        ]}
+      >
+        <Button href="/contact" arrow>
+          Request a quote
+        </Button>
+      </PageHero>
 
-        <Container className="relative z-10">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 text-sm text-mute hover:text-paper transition-colors duration-200 mb-8"
-          >
-            <ArrowLeft size={14} />
-            All services
-          </Link>
-          <Reveal>
-            <Eyebrow className="mb-4">{svc.number}</Eyebrow>
-            <h1 className="text-h1 font-heading text-paper max-w-2xl">{svc.title}</h1>
-          </Reveal>
-        </Container>
-      </div>
-
-      {/* White content section */}
-      <div className="bg-white py-16 lg:py-24">
+      <section className="section-py">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-            {/* Main content */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-14 lg:gap-20">
             <div>
               <Reveal>
-                <p className="text-body text-[#3A4A60] leading-relaxed mb-8">{svc.fullDescription}</p>
+                <Eyebrow className="mb-5">Overview</Eyebrow>
               </Reveal>
-              <Reveal delay={0.1}>
-                <h2 className="text-h3 font-heading text-[#04091E] mb-5">Our capabilities</h2>
-                <ul className="flex flex-col gap-3 mb-8">
-                  {svc.capabilities.map((cap) => (
-                    <li key={cap} className="flex items-start gap-3">
-                      <CheckCircle size={16} className="text-[#D4A020] mt-0.5 shrink-0" />
-                      <span className="text-[#3A4A60]">{cap}</span>
-                    </li>
-                  ))}
-                </ul>
+              <Reveal delay={0.06}>
+                <p className="font-heading text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug text-ink font-light">
+                  {svc.fullDescription}
+                </p>
               </Reveal>
-              <Reveal delay={0.18}>
-                <Button
-                  href="/contact"
-                  className="bg-[#0A1547] text-white hover:bg-[#D4A020] hover:text-[#04091E]"
-                >
-                  Request a quote for this service
-                  <ArrowRight size={14} />
-                </Button>
-              </Reveal>
+
+              <h2 className="h-mix text-h2 text-ink mt-16 mb-8">
+                <SplitText text="Our" /> <SplitText text="capabilities" className="font-extrabold" delay={0.06} />
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {svc.capabilities.map((cap, i) => (
+                  <Reveal key={cap} delay={i * 0.05}>
+                    <div className="flex items-center gap-4 rounded-[20px] bg-white p-5 shadow-card h-full">
+                      <span className="w-9 h-9 rounded-full bg-accent text-ink flex items-center justify-center shrink-0">
+                        <Check size={16} strokeWidth={3} />
+                      </span>
+                      <span className="text-ink font-medium text-[15px]">{cap}</span>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
             </div>
 
-            {/* Service photo + related services */}
-            <Reveal delay={0.1}>
-              <div className="flex flex-col gap-5">
-              <div className={`relative aspect-[4/3] rounded-xl overflow-hidden shadow-[0_4px_24px_-8px_rgba(10,21,71,0.18)] ${isRender ? 'bg-[#F0F4FA]' : ''}`}>
-                <Image
-                  src={svc.image}
-                  alt={svc.title}
-                  fill
-                  className={isRender ? 'object-contain p-6' : 'object-cover'}
-                  sizes="(max-width: 1024px) 100vw, 400px"
-                />
-                {!isRender && (
-                  <>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#04091E]/50 to-transparent" />
-                    <div className="absolute bottom-4 left-4">
-                      <span className="text-[10px] text-[#D4A020] tracking-widest uppercase font-heading">iSteel Engineering</span>
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="bg-[#F8FAFF] border border-[#E0E8F5] rounded-xl p-6 shadow-[0_2px_16px_-4px_rgba(10,21,71,0.06)]">
-                <h3 className="text-h3 font-heading text-[#04091E] mb-5">Related services</h3>
-                <div className="flex flex-col gap-3">
-                  {services
-                    .filter((s) => s.slug !== svc.slug)
-                    .slice(0, 5)
-                    .map((related) => (
+            <aside className="flex flex-col gap-4 lg:sticky lg:top-28 self-start">
+              <Reveal>
+                <div className="rounded-[28px] bg-ink text-white p-7 relative overflow-hidden">
+                  <span className="absolute -right-6 -bottom-6 opacity-10">
+                    <SteelIcon name={svc.icon} size={160} color="gold" />
+                  </span>
+                  <h3 className="h-mix text-h2 relative">
+                    Have a <strong>project?</strong>
+                  </h3>
+                  <p className="relative mt-3 text-white/60 text-sm leading-relaxed">
+                    Talk to our engineers about {svc.title.toLowerCase()} for your next build.
+                  </p>
+                  <div className="relative mt-6">
+                    <Button href="/contact" arrow>
+                      Get a quote
+                    </Button>
+                  </div>
+                </div>
+              </Reveal>
+              <Reveal delay={0.08}>
+                <div className="rounded-[28px] bg-white p-7 shadow-card">
+                  <h3 className="font-heading font-semibold text-ink mb-4">Related services</h3>
+                  <div className="flex flex-col">
+                    {related.map((r) => (
                       <Link
-                        key={related.slug}
-                        href={`/services/${related.slug}`}
-                        className="flex items-center gap-3 py-3 border-b border-[#E0E8F5] last:border-0 group"
+                        key={r.slug}
+                        href={`/services/${r.slug}`}
+                        className="group flex items-center gap-3 py-3.5 border-b border-ink/10 last:border-0"
                       >
-                        <div className="w-8 h-8 rounded-lg bg-[#0A1547]/8 border border-[#1B2F8A]/15 flex items-center justify-center shrink-0">
-                          <SteelIcon name={related.icon} size={16} color="gold" />
-                        </div>
-                        <span className="text-sm text-[#3A4A60] group-hover:text-[#D4A020] transition-colors duration-200 flex-1">
-                          {related.title}
-                        </span>
-                        <ArrowRight size={12} className="text-[#B0C0D8] group-hover:text-[#D4A020] transition-colors duration-200" />
+                        <span className="text-[11px] font-heading font-bold text-accent w-6">{r.number}</span>
+                        <span className="text-sm text-copy group-hover:text-ink transition-colors flex-1">{r.title}</span>
+                        <ArrowUpRight size={14} className="text-ink/30 group-hover:text-accent group-hover:rotate-45 transition-all duration-300" />
                       </Link>
                     ))}
+                  </div>
                 </div>
-              </div>
-              </div>
-            </Reveal>
+              </Reveal>
+              {!isRender && (
+                <Reveal delay={0.12}>
+                  <div className="relative aspect-[4/3] rounded-[28px] overflow-hidden">
+                    <Image src={svc.image} alt={svc.title} fill sizes="400px" className="object-cover" />
+                  </div>
+                </Reveal>
+              )}
+            </aside>
           </div>
         </Container>
-      </div>
+      </section>
 
-      {/* Prev / Next navigation — light border bar */}
-      <div className="border-t border-[#E0E8F5] bg-[#F8FAFF]">
-        <Container className="py-8">
-          <div className="flex justify-between gap-4">
-            {prev ? (
-              <Link href={`/services/${prev.slug}`} className="flex flex-col gap-1 group max-w-[240px]">
-                <span className="text-xs text-[#8090B0] flex items-center gap-1">
-                  <ArrowLeft size={12} />
-                  Previous
-                </span>
-                <span className="text-sm text-[#04091E] group-hover:text-[#D4A020] transition-colors duration-200">
-                  {prev.title}
-                </span>
-              </Link>
-            ) : <div />}
-            {next && (
-              <Link href={`/services/${next.slug}`} className="flex flex-col items-end gap-1 group max-w-[240px] text-right">
-                <span className="text-xs text-[#8090B0] flex items-center gap-1">
-                  Next
-                  <ArrowRight size={12} />
-                </span>
-                <span className="text-sm text-[#04091E] group-hover:text-[#D4A020] transition-colors duration-200">
-                  {next.title}
-                </span>
-              </Link>
-            )}
+      {/* Prev / next */}
+      <section>
+        <Container>
+          <div className="grid grid-cols-2 gap-3">
+            <Link href={`/services/${prev.slug}`} className="group rounded-[24px] bg-white p-6 sm:p-8 shadow-card hover:bg-steel transition-colors duration-500">
+              <span className="flex items-center gap-2 text-[11px] font-heading uppercase tracking-[0.2em] text-copy group-hover:text-white/50">
+                <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1" /> Previous
+              </span>
+              <span className="mt-3 block h-mix text-ink group-hover:text-white text-[clamp(1rem,2vw,1.5rem)] !font-semibold transition-colors">
+                {prev.title}
+              </span>
+            </Link>
+            <Link href={`/services/${next.slug}`} className="group rounded-[24px] bg-white p-6 sm:p-8 shadow-card text-right hover:bg-steel transition-colors duration-500">
+              <span className="flex items-center justify-end gap-2 text-[11px] font-heading uppercase tracking-[0.2em] text-copy group-hover:text-white/50">
+                Next <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+              </span>
+              <span className="mt-3 block h-mix text-ink group-hover:text-white text-[clamp(1rem,2vw,1.5rem)] !font-semibold transition-colors">
+                {next.title}
+              </span>
+            </Link>
           </div>
         </Container>
-      </div>
+      </section>
 
       <CTABanner />
     </>

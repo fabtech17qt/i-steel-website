@@ -1,118 +1,128 @@
 'use client'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { Container } from '@/components/ui/Container'
-import { Section } from '@/components/ui/Section'
 import { Eyebrow } from '@/components/ui/Eyebrow'
-import { Reveal } from '@/components/motion/Reveal'
 import { Button } from '@/components/ui/Button'
+import { Reveal } from '@/components/motion/Reveal'
+import { SplitText } from '@/components/motion/SplitText'
 import { projects } from '@/lib/content/projects'
 
-const featured = projects.filter((p) => p.featured)
+const featured = projects.filter((p) => p.featured).concat(projects.filter((p) => !p.featured)).slice(0, 7)
 
 export function FeaturedProjects() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: 'start',
-    dragFree: true,
-    containScroll: 'trimSnaps',
-  })
+  const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', dragFree: true, containScroll: 'trimSnaps' })
+  const [progress, setProgress] = useState(0)
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
+  const onScroll = useCallback(() => {
+    if (!emblaApi) return
+    setProgress(Math.max(0, Math.min(1, emblaApi.scrollProgress())))
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    onScroll()
+    emblaApi.on('scroll', onScroll).on('reInit', onScroll)
+  }, [emblaApi, onScroll])
 
   return (
-    <Section className="bg-white">
+    <section className="pt-[clamp(40px,5vw,80px)] pb-[clamp(80px,10vw,150px)] overflow-hidden">
       <Container>
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
-          <Reveal>
-            <Eyebrow className="mb-3">Selected work</Eyebrow>
-            <h2 className="text-h1 font-heading text-[#04091E]">
-              Excellence in every build
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+          <div>
+            <Reveal>
+              <Eyebrow className="mb-5">Selected work</Eyebrow>
+            </Reveal>
+            <h2 className="h-mix text-display text-ink">
+              <SplitText text="Excellence in" />
+              <br />
+              <SplitText text="every build" className="font-extrabold" delay={0.1} />
+              <span className="text-accent font-extrabold">.</span>
             </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={scrollPrev}
-                aria-label="Previous project"
-                className="w-10 h-10 rounded-full border border-[#C8D8EC] flex items-center justify-center text-[#6080A0] hover:border-[#0A1547] hover:text-[#0A1547] hover:bg-[#F0F4FA] transition-all duration-200"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={scrollNext}
-                aria-label="Next project"
-                className="w-10 h-10 rounded-full border border-[#C8D8EC] flex items-center justify-center text-[#6080A0] hover:border-[#0A1547] hover:text-[#0A1547] hover:bg-[#F0F4FA] transition-all duration-200"
-              >
-                <ChevronRight size={18} />
-              </button>
-              <Button
-                href="/projects"
-                className="group shrink-0 bg-[#0A1547] text-white hover:bg-[#10206A]"
-              >
-                View all projects
-                <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
-              </Button>
-            </div>
+          </div>
+          <Reveal delay={0.1} className="flex items-center gap-3">
+            <button
+              onClick={() => emblaApi?.scrollPrev()}
+              aria-label="Previous project"
+              className="w-12 h-12 rounded-full border border-ink/15 flex items-center justify-center text-ink hover:bg-ink hover:text-white transition-colors duration-300"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <button
+              onClick={() => emblaApi?.scrollNext()}
+              aria-label="Next project"
+              className="w-12 h-12 rounded-full border border-ink/15 flex items-center justify-center text-ink hover:bg-ink hover:text-white transition-colors duration-300"
+            >
+              <ArrowRight size={18} />
+            </button>
+            <Button href="/projects" variant="navy" arrow className="ml-2">
+              All projects
+            </Button>
           </Reveal>
         </div>
       </Container>
 
-      {/* Full-bleed embla viewport — left padding aligns first card with page content */}
-      <div
-        className="overflow-hidden"
-        ref={emblaRef}
-        style={{ paddingLeft: 'clamp(20px, 4vw, 56px)' }}
-      >
-        <div className="flex gap-5">
+      <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef} style={{ paddingLeft: 'clamp(16px, 4vw, 56px)' }}>
+        <div className="flex gap-4 md:gap-5">
           {featured.map((project, i) => (
             <motion.div
               key={project.slug}
-              className="flex-none w-[270px] sm:w-[320px] md:w-[380px]"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07, ease: [0.16, 1, 0.3, 1], duration: 0.6 }}
+              className="flex-none w-[78vw] sm:w-[360px] lg:w-[420px]"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.08, ease: [0.16, 1, 0.3, 1], duration: 0.9 }}
             >
-              <Link href={`/projects/${project.slug}`} className="group block">
-                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-[0_8px_32px_-8px_rgba(10,21,71,0.18)] mb-4">
+              <Link href={`/projects/${project.slug}`} className="group block" draggable={false}>
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-steel">
                   <Image
                     src={project.coverImage}
                     alt={project.name}
                     fill
-                    className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 640px) 270px, (max-width: 768px) 320px, 380px"
+                    draggable={false}
+                    className="object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-110"
+                    sizes="(max-width: 640px) 78vw, 420px"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#04091E]/85 via-[#04091E]/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent opacity-90" />
 
-                  <div className="absolute top-4 left-4 z-[2] px-3 py-1 rounded-full border border-accent/50 bg-[#04091E]/60 backdrop-blur-sm">
-                    <span className="text-eyebrow text-accent">{project.sector}</span>
+                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
+                    <span className="px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-heading font-semibold uppercase tracking-[0.16em] text-white">
+                      {project.sector}
+                    </span>
+                    <span className="font-heading text-xs text-white/70">{project.year}</span>
                   </div>
 
-                  <div className="absolute bottom-4 right-4 z-[2] w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:border-accent/60 group-hover:text-accent transition-all duration-300 bg-white/10 backdrop-blur-sm">
-                    <ArrowUpRight size={15} />
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-12 z-[2]">
-                    <div className="text-xs text-white/50">{project.year} · {project.location}</div>
+                  <div className="absolute inset-x-0 bottom-0 p-6">
+                    <h3 className="h-mix text-white text-[1.6rem] !font-bold leading-tight">{project.name}</h3>
+                    <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out-expo">
+                      <p className="overflow-hidden text-white/70 text-sm leading-relaxed">
+                        <span className="block pt-3">{project.scope.slice(0, 110)}…</span>
+                      </p>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-4">
+                      <span className="text-[11px] text-white/60 font-heading uppercase tracking-[0.16em]">{project.location}</span>
+                      <span className="w-10 h-10 rounded-full bg-accent text-ink flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500 ease-out-expo">
+                        <ArrowUpRight size={16} />
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                <h3 className="text-h3 font-heading text-[#04091E] mb-1 group-hover:text-accent transition-colors duration-200">
-                  {project.name}
-                </h3>
-                <p className="text-sm text-[#6080A0] leading-relaxed">{project.scope.substring(0, 80)}…</p>
               </Link>
             </motion.div>
           ))}
-          {/* Right-edge breathing room */}
-          <div className="flex-none w-8" />
+          <div className="flex-none w-4 md:w-10" />
         </div>
       </div>
-    </Section>
+
+      <Container>
+        <div className="mt-10 h-[2px] bg-ink/10 rounded-full overflow-hidden">
+          <div className="h-full bg-accent origin-left transition-transform duration-150" style={{ transform: `scaleX(${0.12 + progress * 0.88})` }} />
+        </div>
+      </Container>
+    </section>
   )
 }

@@ -1,4 +1,5 @@
-export { Button, IconButton } from './Button'
+export { Button } from './Button'
+export { Dot } from './Dot'
 export { Container } from './Container'
 export { Section } from './Section'
 export { Eyebrow } from './Eyebrow'

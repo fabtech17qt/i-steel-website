@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
-  return <ContactSection />
+  return <ContactSection asPage />
 }

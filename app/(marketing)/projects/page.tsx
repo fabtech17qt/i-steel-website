@@ -5,120 +5,110 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
-import { Eyebrow } from '@/components/ui/Eyebrow'
-import { Reveal } from '@/components/motion/Reveal'
+import { PageHero } from '@/components/sections/PageHero'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { ClientsStrip } from '@/components/sections/ClientsStrip'
-import { SteelIcon } from '@/components/ui/SteelIcon'
 import { projects, type Sector } from '@/lib/content/projects'
+import { cn } from '@/lib/utils'
 
 const sectors: ('All' | Sector)[] = ['All', 'Industrial', 'Commercial', 'Oil & Gas', 'Civil', 'MEP']
 
 export default function ProjectsPage() {
   const [active, setActive] = useState<'All' | Sector>('All')
-
   const filtered = active === 'All' ? projects : projects.filter((p) => p.sector === active)
 
   return (
     <>
-      {/* Dark hero header */}
-      <div className="relative pt-[120px] pb-24 overflow-hidden">
-        <Image
-          src="/assets/envato/Images/18.jpeg"
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          aria-hidden="true"
-          priority
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(135deg, rgba(4,9,30,0.95) 0%, rgba(10,21,71,0.90) 100%)' }}
-        />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none">
-          <SteelIcon name="028-forge" size={360} color="white" />
-        </div>
+      <PageHero
+        eyebrow="Our work"
+        light="Projects that"
+        bold="Stand tall"
+        description="A selection of delivered projects across industrial, commercial, oil & gas and civil sectors throughout Qatar."
+        image="/assets/envato/Images/10.jpeg"
+        imageAlt="iSteel project in Doha"
+        breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Projects' }]}
+      />
 
-        <Container className="relative z-10">
-          <Reveal>
-            <Eyebrow className="mb-4">Our work</Eyebrow>
-            <h1 className="text-h1 font-heading text-paper max-w-2xl">Project gallery</h1>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="text-body text-mute mt-6 max-w-xl">
-              A selection of delivered projects across industrial, commercial, oil &amp; gas, and
-              civil sectors throughout Qatar.
-            </p>
-          </Reveal>
-        </Container>
-      </div>
-
-      {/* White grid section */}
-      <div className="bg-white py-16 lg:py-20">
+      <section className="section-py">
         <Container>
-          {/* Filter tabs */}
-          <div
-            className="flex flex-wrap gap-2 mb-10"
-            role="group"
-            aria-label="Filter projects by sector"
-          >
-            {sectors.map((sector) => (
-              <button
-                key={sector}
-                onClick={() => setActive(sector)}
-                className={[
-                  'px-4 py-2 text-sm font-heading rounded-full border transition-all duration-200',
-                  active === sector
-                    ? 'bg-[#0A1547] text-white border-[#0A1547]'
-                    : 'border-[#C8D8EC] text-[#6080A0] hover:text-[#04091E] hover:border-[#0A1547]/40',
-                ].join(' ')}
-                aria-pressed={active === sector}
-              >
-                {sector}
-              </button>
-            ))}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            <div role="group" aria-label="Filter projects by sector" className="inline-flex flex-wrap gap-1 p-1.5 rounded-full bg-white shadow-card self-start">
+              {sectors.map((sector) => {
+                const count = sector === 'All' ? projects.length : projects.filter((p) => p.sector === sector).length
+                return (
+                  <button
+                    key={sector}
+                    onClick={() => setActive(sector)}
+                    aria-pressed={active === sector}
+                    className={cn(
+                      'relative px-4 sm:px-5 h-10 text-sm font-heading font-medium rounded-full transition-colors duration-300',
+                      active === sector ? 'text-white' : 'text-copy hover:text-ink'
+                    )}
+                  >
+                    {active === sector && (
+                      <motion.span
+                        layoutId="project-filter"
+                        className="absolute inset-0 rounded-full bg-steel"
+                        transition={{ type: 'spring', stiffness: 400, damping: 34 }}
+                      />
+                    )}
+                    <span className="relative">
+                      {sector}
+                      <sup className={cn('ml-1 text-[9px]', active === sector ? 'text-accent' : 'text-copy/50')}>{count}</sup>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+            <p className="font-heading text-sm text-copy">
+              Showing <strong className="text-ink">{filtered.length}</strong> of {projects.length} projects
+            </p>
           </div>
 
-          {/* Grid */}
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
             <AnimatePresence mode="popLayout">
               {filtered.map((project, i) => (
                 <motion.div
                   key={project.slug}
                   layout
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                  initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.94 }}
+                  transition={{ delay: i * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className={cn(i % 5 === 0 && active === 'All' && 'lg:col-span-2')}
                 >
                   <Link href={`/projects/${project.slug}`} className="group block">
-                    <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-[#F0F4FA] border border-[#E0E8F5] mb-4 shadow-[0_2px_16px_-4px_rgba(10,21,71,0.08)] group-hover:shadow-[0_8px_32px_-8px_rgba(10,21,71,0.16)] transition-shadow duration-300">
+                    <div
+                      className={cn(
+                        'relative overflow-hidden rounded-[28px] bg-steel',
+                        i % 5 === 0 && active === 'All' ? 'aspect-[4/5] lg:aspect-auto lg:h-full' : 'aspect-[4/5]'
+                      )}
+                    >
                       <Image
                         src={project.coverImage}
                         alt={project.name}
                         fill
-                        className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-110"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#04091E]/70 via-transparent to-transparent z-[1]" />
-
-                      {/* Sector tag */}
-                      <div className="absolute top-4 left-4 z-[2]">
-                        <span className="px-2.5 py-1 text-[10px] font-heading font-semibold uppercase tracking-widest text-[#D4A020] bg-[#04091E]/80 border border-[#D4A020]/30 rounded-full">
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
+                      <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
+                        <span className="px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-heading font-semibold uppercase tracking-[0.16em] text-white">
                           {project.sector}
                         </span>
+                        <span className="w-10 h-10 rounded-full bg-accent text-ink flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500 ease-out-expo">
+                          <ArrowUpRight size={16} />
+                        </span>
                       </div>
-
-                      {/* Arrow hover */}
-                      <div className="absolute bottom-4 right-4 z-[2] w-9 h-9 rounded-full border border-white/0 flex items-center justify-center text-white opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:border-white/40 group-hover:bg-[#D4A020] transition-all duration-300">
-                        <ArrowUpRight size={15} />
+                      <div className="absolute inset-x-0 bottom-0 p-6">
+                        <div className="text-[11px] font-heading uppercase tracking-[0.16em] text-accent">
+                          {project.year} · {project.location}
+                        </div>
+                        <h2 className="mt-2 h-mix text-white text-[clamp(1.35rem,2vw,1.75rem)] !font-bold leading-tight">
+                          {project.name}
+                        </h2>
                       </div>
                     </div>
-                    <h2 className="text-h3 font-heading text-[#04091E] mb-1 group-hover:text-[#D4A020] transition-colors duration-200">
-                      {project.name}
-                    </h2>
-                    <p className="text-sm text-[#6080A0]">{project.location} · {project.year}</p>
                   </Link>
                 </motion.div>
               ))}
@@ -126,15 +116,12 @@ export default function ProjectsPage() {
           </motion.div>
 
           {filtered.length === 0 && (
-            <p className="text-[#8090B0] text-center py-20">
-              No projects found in this category yet.
-            </p>
+            <p className="text-copy text-center py-20 font-heading">No projects in this category yet — check back soon.</p>
           )}
         </Container>
-      </div>
+      </section>
 
       <ClientsStrip />
-
       <CTABanner />
     </>
   )

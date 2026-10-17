@@ -1,29 +1,38 @@
 import Link from 'next/link'
-import { ArrowLeft, Construction } from 'lucide-react'
-import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-ink flex items-center justify-center">
-      <Container>
-        <div className="flex flex-col items-center text-center gap-6 py-20">
-          <div className="w-16 h-16 rounded-full border border-accent/30 bg-accent/10 flex items-center justify-center">
-            <Construction size={24} className="text-accent" />
-          </div>
-          <div>
-            <p className="text-eyebrow mb-3">404</p>
-            <h1 className="text-h1 font-heading text-paper mb-4">Page not found</h1>
-            <p className="text-body text-mute max-w-sm">
-              This page doesn&rsquo;t exist or has been moved. Let&rsquo;s get you back on track.
-            </p>
-          </div>
-          <Button href="/" className="group">
-            <ArrowLeft size={15} className="transition-transform duration-200 group-hover:-translate-x-1" />
+    <div className="min-h-screen bg-paper p-[clamp(8px,1.2vw,16px)] flex">
+      <div className="frame !m-0 flex-1 bg-ink text-white flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center font-heading font-extrabold text-[clamp(10rem,40vw,34rem)] leading-none text-white/[0.04] select-none"
+        >
+          404
+        </div>
+        <p className="relative text-eyebrow mb-5">Error 404</p>
+        <h1 className="relative h-mix text-display">
+          Off the
+          <br />
+          <strong>blueprint</strong>
+          <span className="text-accent font-extrabold">.</span>
+        </h1>
+        <p className="relative mt-6 text-white/60 max-w-sm">
+          This page doesn&rsquo;t exist or has been moved. Let&rsquo;s get you back on solid steel.
+        </p>
+        <div className="relative mt-8 flex flex-wrap gap-3 justify-center">
+          <Button href="/" arrow>
             Back to home
           </Button>
+          <Button href="/contact" variant="outline-light">
+            Contact us
+          </Button>
         </div>
-      </Container>
+        <Link href="/" className="absolute top-8 left-8 font-heading font-extrabold text-xl">
+          iSTEEL<span className="text-accent">.</span>
+        </Link>
+      </div>
     </div>
   )
 }

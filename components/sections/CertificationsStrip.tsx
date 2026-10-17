@@ -1,61 +1,69 @@
 import React from 'react'
-import Image from 'next/image'
+import { ShieldCheck } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
-import { Reveal } from '@/components/motion/Reveal'
 import { Eyebrow } from '@/components/ui/Eyebrow'
-import { SteelIcon } from '@/components/ui/SteelIcon'
+import { Button } from '@/components/ui/Button'
+import { Reveal } from '@/components/motion/Reveal'
+import { SplitText } from '@/components/motion/SplitText'
 
 const certs = [
-  { name: 'ISO 9001:2015', sub: 'Quality Management', icon: '016-steel' },
-  { name: 'ISO 14001:2015', sub: 'Environmental Management', icon: '019-factory' },
-  { name: 'ISO 45001:2018', sub: 'Occupational H&S', icon: '007-tools' },
-  { name: 'ICV Certified', sub: 'In-Country Value — Qatar', icon: '036-chain' },
+  { name: 'ISO 9001', year: '2015', sub: 'Quality management' },
+  { name: 'ISO 14001', year: '2015', sub: 'Environmental management' },
+  { name: 'ISO 45001', year: '2018', sub: 'Occupational health & safety' },
+  { name: 'ICV', year: 'Qatar', sub: 'In-Country Value certified' },
 ]
 
 export function CertificationsStrip() {
   return (
-    <div className="relative overflow-hidden py-16">
-      {/* Metal texture 3 background */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/assets/envato/Metal Textures 3.jpg"
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          aria-hidden="true"
-        />
-      </div>
-      {/* Navy + white overlay */}
-      <div className="absolute inset-0 z-[1]"
-        style={{ background: 'linear-gradient(135deg, rgba(4,9,30,0.96) 0%, rgba(16,32,106,0.93) 100%)' }}
-      />
-      {/* Watermark icon */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 z-[2] opacity-[0.05] pointer-events-none">
-        <SteelIcon name="046-screws" size={280} color="white" />
-      </div>
-
-      <Container className="relative z-10">
-        <Reveal>
-          <Eyebrow className="text-center mb-10">Certified & Accredited</Eyebrow>
-        </Reveal>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {certs.map((cert, i) => (
-            <Reveal key={cert.name} delay={i * 0.07}>
-              <div className="group flex flex-col items-center text-center gap-3 p-5 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:border-accent/40 hover:bg-white/8 transition-all duration-300">
-                {/* TODO: Replace with real ISO badge */}
-                <div className="w-16 h-16 rounded-full border-2 border-accent/30 bg-white/5 flex items-center justify-center group-hover:border-accent/60 transition-colors duration-300">
-                  <SteelIcon name={cert.icon} size={28} color="gold" />
-                </div>
-                <div>
-                  <div className="text-sm font-heading font-medium text-white">{cert.name}</div>
-                  <div className="text-xs text-white/50 mt-0.5">{cert.sub}</div>
-                </div>
+    <section className="section-py">
+      <Container>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.4fr] gap-12 lg:gap-20 items-end">
+          <div>
+            <Reveal>
+              <Eyebrow className="mb-5">Quality &amp; compliance</Eyebrow>
+            </Reveal>
+            <h2 className="h-mix text-h1 text-ink">
+              <SplitText text="Certified." />
+              <br />
+              <SplitText text="Trusted." className="font-extrabold" delay={0.1} />
+            </h2>
+            <Reveal delay={0.15}>
+              <p className="mt-5 text-copy text-[15px] leading-relaxed max-w-sm">
+                Audited by Quality Austria / IQNET and registered with the Qatar National Codification Bureau (NCAGE BSW0A).
+              </p>
+            </Reveal>
+            <Reveal delay={0.22}>
+              <div className="mt-7">
+                <Button href="/certifications" variant="outline" arrow>
+                  View certifications
+                </Button>
               </div>
             </Reveal>
-          ))}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {certs.map((c, i) => (
+              <Reveal key={c.name} delay={i * 0.07}>
+                <div className="group relative rounded-[24px] bg-white p-5 sm:p-7 shadow-card overflow-hidden h-full">
+                  <span className="absolute inset-0 bg-steel translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out-expo" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between">
+                      <ShieldCheck size={22} className="text-accent" />
+                      <span className="text-[10px] font-heading tracking-[0.2em] uppercase text-copy/60 group-hover:text-white/50 transition-colors">
+                        {c.year}
+                      </span>
+                    </div>
+                    <div className="mt-8 font-heading text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold text-ink group-hover:text-white transition-colors leading-none">
+                      {c.name}
+                    </div>
+                    <div className="mt-2 text-xs sm:text-sm text-copy group-hover:text-white/60 transition-colors">{c.sub}</div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </Container>
-    </div>
+    </section>
   )
 }
